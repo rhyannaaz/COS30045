@@ -5,55 +5,66 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="description" content="Data Visualisation Project 2023" />
-	<meta name="keywords" content="HTML, CSS" />
+	<meta name="keywords" content="HTML, CSS, JSON, JavaScript" />
 	<meta name="authors" content="Hayden Tran, Rhyanna Arisya Zaharom" />
 
-	<title>Migration in Somalia Due to Acute Food Insecurity</title>
+	<title>Migration in Somalia</title>
 	<script src="https://d3js.org/d3.v7.min.js"></script>
 	<script src="./index.js"></script>
 	<link rel="stylesheet" href="./index.css">
+	<link href="https://fonts.googleapis.com/css2?family=Arial" rel="stylesheet" />
 
 </head>
 <body>
     <div>
         <div>
-            <div>
-                <h1>Migration in Somalia Due to Acute Food Insecurity</h1>
+            <div style="text-align:center">
+                <h1>Migration in Somalia</h1>
                 <div style="border: solid black .5px; " class="w-75 mx-auto"></div>
             </div>
         </div>
+				<br><br>
+				<div class="card">
+	        <div class="container" style="text-align:center">
+	            <h2>History of Somalia</h2>
+	            <div class="card-body">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean urna nunc, pulvinar sed malesuada in,
+								consequat sed erat. Nullam id congue neque. Pellentesque aliquam pretium consectetur. Sed et tristique mi,
+								vel fringilla est. Donec consectetur, purus ac consequat euismod, nisl risus tincidunt mauris, ac tincidunt
+								lectus purus nec tellus. Donec sodales dolor ipsum, sit amet faucibus lorem finibus in. Nam blandit quam
+								varius nunc egestas, eget laoreet nisi tempus. Vivamus laoreet orci vitae risus rhoncus, nec elementum diam
+								elementum. Vivamus convallis tempor odio malesuada congue. Praesent tempor auctor metus id vestibulum. Quisque
+								quam augue, varius vitae felis et, tristique malesuada nunc.
+	            </div>
+	        </div>
+				</div>
+				<br><br>
+				<div class="card">
+					<div class="container" style="text-align:center">
+						<h2>Visualisation 1</h2>
+	            <div>
+								<p id="chart1"></p>
+	                <span>
+										Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean urna nunc, pulvinar sed malesuada in,
+										consequat sed erat. Nullam id congue neque. Pellentesque aliquam pretium consectetur. Sed et tristique mi,
+										vel fringilla est. Donec consectetur, purus ac consequat euismod, nisl risus tincidunt mauris, ac tincidunt
+										lectus purus nec tellus. Donec sodales dolor ipsum, sit amet faucibus lorem finibus in. Nam blandit quam
+										varius nunc egestas, eget laoreet nisi tempus. Vivamus laoreet orci vitae risus rhoncus, nec elementum diam
+										elementum. Vivamus convallis tempor odio malesuada congue. Praesent tempor auctor metus id vestibulum. Quisque
+										quam augue, varius vitae felis et, tristique malesuada nunc.
+									</span>
+	            </div>
+	        </div>
+				</div>
+				<br><br>
         <div>
-            <h2>History of Somalia</h2>
-            <div class="card-body">
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean urna nunc, pulvinar sed malesuada in,
-							consequat sed erat. Nullam id congue neque. Pellentesque aliquam pretium consectetur. Sed et tristique mi,
-							vel fringilla est. Donec consectetur, purus ac consequat euismod, nisl risus tincidunt mauris, ac tincidunt
-							lectus purus nec tellus. Donec sodales dolor ipsum, sit amet faucibus lorem finibus in. Nam blandit quam
-							varius nunc egestas, eget laoreet nisi tempus. Vivamus laoreet orci vitae risus rhoncus, nec elementum diam
-							elementum. Vivamus convallis tempor odio malesuada congue. Praesent tempor auctor metus id vestibulum. Quisque
-							quam augue, varius vitae felis et, tristique malesuada nunc.
-            </div>
-        </div>
-        <div>
-					<h2>Visualisation 1</h2>
             <div>
-                <span>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean urna nunc, pulvinar sed malesuada in,
-									consequat sed erat. Nullam id congue neque. Pellentesque aliquam pretium consectetur. Sed et tristique mi,
-									vel fringilla est. Donec consectetur, purus ac consequat euismod, nisl risus tincidunt mauris, ac tincidunt
-									lectus purus nec tellus. Donec sodales dolor ipsum, sit amet faucibus lorem finibus in. Nam blandit quam
-									varius nunc egestas, eget laoreet nisi tempus. Vivamus laoreet orci vitae risus rhoncus, nec elementum diam
-									elementum. Vivamus convallis tempor odio malesuada congue. Praesent tempor auctor metus id vestibulum. Quisque
-									quam augue, varius vitae felis et, tristique malesuada nunc.
-								</span>
-            </div>
-        </div>
-        <div>
-            <div>
-                <div>
-                    <h2>Visualisation 2</h2>
-                    <div>
-                        <span>
+							<div class="card">
+								<div class="container" style="text-align:center">
+									<h2>Visualisation 2</h2>
+										<div>
+											<p id="chart2"></p>
+												<span>
 													Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean urna nunc, pulvinar sed malesuada in,
 													consequat sed erat. Nullam id congue neque. Pellentesque aliquam pretium consectetur. Sed et tristique mi,
 													vel fringilla est. Donec consectetur, purus ac consequat euismod, nisl risus tincidunt mauris, ac tincidunt
@@ -62,12 +73,16 @@
 													elementum. Vivamus convallis tempor odio malesuada congue. Praesent tempor auctor metus id vestibulum. Quisque
 													quam augue, varius vitae felis et, tristique malesuada nunc.
 												</span>
-                    </div>
-                </div>
-                <div>
-                    <h2>Visualisation 3</h2>
-                    <div>
-                        <span>
+										</div>
+								</div>
+							</div>
+							<br><br>
+							<div class="card">
+								<div class="container" style="text-align:center">
+									<h2>Visualisation 3</h2>
+										<div>
+											<p id="chart3"></p>
+												<span>
 													Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean urna nunc, pulvinar sed malesuada in,
 													consequat sed erat. Nullam id congue neque. Pellentesque aliquam pretium consectetur. Sed et tristique mi,
 													vel fringilla est. Donec consectetur, purus ac consequat euismod, nisl risus tincidunt mauris, ac tincidunt
@@ -76,10 +91,12 @@
 													elementum. Vivamus convallis tempor odio malesuada congue. Praesent tempor auctor metus id vestibulum. Quisque
 													quam augue, varius vitae felis et, tristique malesuada nunc.
 												</span>
-                    </div>
-                </div>
+										</div>
+								</div>
+							</div>
+							<br><br>
             </div>
-            <div>
+            <div style="text-align:center">
                 <h2>Conclusion</h2>
                 <span>
 									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean urna nunc, pulvinar sed malesuada in,
@@ -93,10 +110,10 @@
             </div>
         </div>
     </div>
-    <footer>
-        <div class="text-center">
-            <p> Data Visualisation Project | 2023 </p>
-            <p> Created by Hayden Tran and Rhyanna Arisya Zaharom - TU1_G10</p>
+    <footer style="text-align:center">
+        <div>
+            <p> Data Visualisation Project | 2023 <br>
+							Created by Hayden Tran and Rhyanna Arisya Zaharom - TU1_G10</p>
         </div>
     </footer>
 </body>
