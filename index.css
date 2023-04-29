@@ -1,6 +1,24 @@
 /**
 * Authors: Hayden Tran (102882815), Rhyanna Arisya Zaharom (103698709)
 * Target: index.html
-* Purpose: Styling for main page
+* Purpose: styling main page
 * Created: 29th April 2023
 **/
+
+* {
+	font-family: 'Arial', sans-serif;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 100%;
+  border-radius: 5px;
+	border-style: solid;
+  border-width: thin;
+	border-color: #ced4da;
+}
+
+.container {
+  padding: 2px 16px;
+}
