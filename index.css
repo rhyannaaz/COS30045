@@ -1,7 +1,6 @@
 /**
 * Authors: Hayden Tran (102882815), Rhyanna Arisya Zaharom (103698709)
 * Target: index.html
-* Purpose: styling main page
 * Created: 29th April 2023
 **/
 
@@ -21,4 +20,26 @@
 
 .container {
   padding: 2px 16px;
+}
+
+span.text1 {
+	float: right;
+	text-align: justify;
+	width: 45%;
+	margin-top: -25%;
+}
+
+span.text2 {
+	/* float: left;
+	text-align: justify;
+	width: 45%;
+	margin-top: -15%; */
+}
+
+span.text3 {
+	text-align: justify;
+}
+
+#chart1 {
+	width: 45%;
 }
