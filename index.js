@@ -68,12 +68,17 @@ function init() {
         return i * (width / bar_number);
       })
       .attr("y", function (d) {
-        return height/2 - (10 * d.quarterlyChange);
+        if (d.quarterlyChange >= 0) {
+          return height / 2 - (30 * d.quarterlyChange);
+      } else {
+          return height / 2;
+      }
       })
       .attr('width', width / bar_number - bar_padding)
       .attr('height', function (d) {
-        return 10 * d.quarterlyChange;
+        return Math.abs(30 * d.quarterlyChange);
       })   
+      .attr("fill", "darkred")
   })
   //Visualization 3 END
 }
