@@ -43,7 +43,8 @@ function init() {
   var path = d3.geoPath().projection(projection);
 
   // Set colour range
-  var color = d3.scaleQuantize()
+  const color = d3.scaleOrdinal()
+      .domain(['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4', 'Phase 5'])
       .range(["#a7e8bd", "#ffba08", "#f48c06", "#d00000", "#9d0208"])
 
   // Create the SVG element and set its dimensions
