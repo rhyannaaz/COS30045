@@ -44,8 +44,8 @@ function init() {
 
   // Set colour range
   const color = d3.scaleOrdinal()
-      .domain(['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4', 'Phase 5'])
-      .range(["#a7e8bd", "#ffba08", "#f48c06", "#d00000", "#9d0208"])
+    .domain(['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4', 'Phase 5'])
+    .range(["#a7e8bd", "#ffba08", "#f48c06", "#d00000", "#9d0208"])
 
   // Create the SVG element and set its dimensions
   var svg1 = d3.select("#chart1")
@@ -53,60 +53,57 @@ function init() {
     .attr("width", width)
     .attr("height", height);
 
-    // load in file
-    d3.csv("data/acute_food_insecurity_by_region.csv", function (data) {
+  // load in file
+  d3.csv("data/acute_food_insecurity_by_region.csv", function (data) {
 
-        color.domain([
-            d3.min(data, function (d) { return d.region; }),
-            d3.max(data, function (d) { return d.phase_5; })
-        ]);
+    // color.domain([
+    //   d3.min(data, function (d) { return d.region; }),
+    //   d3.max(data, function (d) { return d.phase_5; })
+    // ]);
 
-        // read in the JSON file and bind it to the path
-        d3.json("json/somalia_with_regions.json", function (json) {
-            // merge the data of CSV and JSON
-            // loop through once for each data value
-            for (var i = 0; i < data.length; i++) {
+    // read in the JSON file and bind it to the path
+    d3.json("json/somalia_with_regions.json", function (json) {
+      // merge the data of CSV and JSON
+      // loop through once for each data value
+      for (var i = 0; i < data.length; i++) {
 
-                var dataRegion = data[i].region;
+        var dataRegion = data[i].region;
 
-                var phase_5 = data[i].phase_5;
+        var phase_5 = data[i].phase_5;
 
-                // find the corresponding state inside GeoJSON
-                for (var j = 0; j < json.features.length; j++) {
-                    var jsonRegion = json.features[j].properties.name;
-                    if (dataRegion == jsonRegion) {
-                        // copy the data value into JSON
-                        json.features[j].properties.phase_5 = phase_5;
-                        // stop looking through the JSON
-                        break;
-                    }
-                }
-            };
+        // find the corresponding state inside GeoJSON
+        for (var j = 0; j < json.features.length; j++) {
+          var jsonRegion = json.features[j].properties.name;
+          if (dataRegion == jsonRegion) {
+            // copy the data value into JSON
+            json.features[j].properties.phase_5 = phase_5;
+            // stop looking through the JSON
+            break;
+          }
+        }
+      };
 
-            svg1.selectAll("path")
-                .data(json.features)
-                .enter()
-                .append("path")
-                .attr("d", path)
-                .attr("stroke", "#373E40")
-                .attr("stroke-width", 1);
-                .style("fill", function (d) {
-                    var value = d.properties.phase_5;  // get data value
-                    if (value) {                          // if value exists
-                        return color(value);              // color in the path
-                    } else {                              // if value is undefined
-                        return "#ccc";                    // light grey area
-                    }
-
-              });
-
-            });
-
+      svg1.selectAll("path")
+        .data(json.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .attr("stroke", "#373E40")
+        .attr("stroke-width", 1)
+        .style("fill", function (d) {
+          var value = d.properties.phase_5;  // get data value
+          if (value) {                          // if value exists
+            return color(value);              // color in the path
+          } else {                              // if value is undefined
+            return "#ccc";                    // light grey area
+          }
 
         });
 
-
     });
+
+  });
+
 
   //Visualization 1 END
 
@@ -119,6 +116,12 @@ function init() {
 
 
   //Visualization 3 START
+  d3.select('body') //create div for tooltip
+    .append('div')
+    .attr('id', 'tooltip')
+    .attr('style', 'position: absolute; opacity: 0;');
+
+
   var svg3 = d3.select("#chart3")
     .append("svg")
     .attr("width", width)
@@ -184,7 +187,7 @@ function init() {
         return Math.abs(height * 2 / 3 - yScale(d.quarterlyChange));
       })
       .attr("fill", "darkred")
-      .on("mouseover", function () { //hover effect to blur out line chart
+      .on("mouseover", function (d) { //hover effect to blur out line chart
         d3.selectAll("path")
           .style("opacity", 0.2);
         d3.selectAll("circle")
@@ -193,6 +196,7 @@ function init() {
           .style("opacity", 1);
         d3.select(this)
           .attr("fill", "#ff6666")
+
       })
       .on("mouseout", function () {
         d3.selectAll("path")
@@ -203,6 +207,7 @@ function init() {
           .style("opacity", 1);
         d3.select(this)
           .attr("fill", "darkred");
+
       })
     //
 
@@ -218,8 +223,24 @@ function init() {
         return yScale(d.annualChange);
       })
       .attr("r", 5)
-      .attr("fill", "darkgreen");
-    //
+      .attr("fill", "darkgreen")
+      .on('mouseover', function (d) {
+        var xPosition = parseFloat(d3.select(this).attr('x'))
+        var yPosition = parseFloat(d3.select(this).attr('y'))
+
+        svg3.append('text')
+          .attr('id', 'tooltip')
+          .attr('x', xPosition + 10)
+          .attr('y', yPosition + 15)
+          .text(d.annualChange)
+          .attr('fill', 'black')
+
+        console.log(d.annualChange)
+      })
+      .on('mouseout', function () {
+        d3.select('#tooltip').style('opacity', 0)
+      })
+
 
     var lineGenerator = d3.line()
       .x(function (d, i) { return i * (width * (11 / 12) / bar_number) + 64; })
@@ -243,6 +264,8 @@ function init() {
         d3.selectAll("rect")
           .style("opacity", 1);
       });
+
+
   })
   //
 
