@@ -116,11 +116,6 @@ function init() {
 
 
   //Visualization 3 START
-  d3.select('body') //create div for tooltip
-    .append('div')
-    .attr('id', 'tooltip')
-    .attr('style', 'position: absolute; opacity: 0;');
-
 
   var svg3 = d3.select("#chart3")
     .append("svg")
@@ -131,6 +126,10 @@ function init() {
     var bar_number = data3.length
     var quarterlyChange = data3.map(function (d) {
       return Number(d.quarterlyChange);
+    });
+
+    var annualChange = data3.map(function (d) {
+      return Number(d.annualChange);
     });
 
     //add scale for visualization
@@ -169,25 +168,27 @@ function init() {
 
     //add bars
     svg3.selectAll("rect")
-      .data(data3)
+      .data(quarterlyChange)
       .enter()
       .append("rect")
+      .attr("id", "bar-chart")
       .attr("x", function (d, i) {
         return i * (width * (11 / 12) / bar_number) + 50;
       })
       .attr("y", function (d) {
-        if (d.quarterlyChange >= 0) {
-          return yScale(d.quarterlyChange);
+        if (d >= 0) {
+          return yScale(d);
         } else {
           return height * (2 / 3);
         }
       })
       .attr('width', width * (11 / 13) / bar_number - bar_padding)
       .attr('height', function (d) {
-        return Math.abs(height * 2 / 3 - yScale(d.quarterlyChange));
+        return Math.abs(height * 2 / 3 - yScale(d));
       })
       .attr("fill", "darkred")
-      .on("mouseover", function (d) { //hover effect to blur out line chart
+      .on("mouseover", function (event, d) {
+        //hover effect to blur out line chart
         d3.selectAll("path")
           .style("opacity", 0.2);
         d3.selectAll("circle")
@@ -196,6 +197,29 @@ function init() {
           .style("opacity", 1);
         d3.select(this)
           .attr("fill", "#ff6666")
+        //
+
+        var xPosition = parseFloat(d3.select(this).attr('x'))
+        var yPosition = parseFloat(d3.select(this).attr('y'))
+
+        svg3.append('rect') //background for text when hovering
+          .attr('id', 'tooltip-background')
+          .attr('x', xPosition + 5)
+          .attr('y', yPosition + 20)
+          .attr('width', 50)
+          .attr('height', 20)
+          .attr('fill', 'lightblue')
+          .attr('opacity', 0.7)
+          .attr('rx', 5)
+          .attr('ry', 5);
+
+        svg3.append('text')   //display text when hovering
+          .style("font", "14px sans-serif")
+          .attr('id', 'tooltip')
+          .attr('x', xPosition + 10)
+          .attr('y', yPosition + 35)
+          .text(d + "%")
+          .attr('fill', 'black');
 
       })
       .on("mouseout", function () {
@@ -208,37 +232,59 @@ function init() {
         d3.select(this)
           .attr("fill", "darkred");
 
+        d3.select('#tooltip').remove() //remove tool tip
+        d3.select('#tooltip-background').remove(); // remove background
+
       })
     //
 
     //scatter plot
     svg3.selectAll("circle")
-      .data(data3)
+      .data(annualChange)
       .enter()
       .append("circle")
       .attr("cx", function (d, i) {
         return i * (width * (11 / 12) / bar_number) + 64;
       })
       .attr("cy", function (d) {
-        return yScale(d.annualChange);
+        return yScale(d);
       })
-      .attr("r", 5)
+      .attr("r", 8)
       .attr("fill", "darkgreen")
-      .on('mouseover', function (d) {
-        var xPosition = parseFloat(d3.select(this).attr('x'))
-        var yPosition = parseFloat(d3.select(this).attr('y'))
+      .on('mouseover', function (event, d) {  //creat hover effect for scatter plot
+        var xPosition = parseFloat(d3.select(this).attr('cx'))
+        var yPosition = parseFloat(d3.select(this).attr('cy'))
 
-        svg3.append('text')
+        svg3.append('rect') //background for text when hovering
+          .attr('id', 'tooltip-background')
+          .attr('x', xPosition + 5)
+          .attr('y', yPosition - 20)
+          .attr('width', 50)
+          .attr('height', 20)
+          .attr('fill', 'lightblue')
+          .attr('opacity', 0.7)
+          .attr('rx', 5)
+          .attr('ry', 5);
+
+        svg3.append('text')   //display text when hovering
+          .style("font", "14px sans-serif")
           .attr('id', 'tooltip')
           .attr('x', xPosition + 10)
-          .attr('y', yPosition + 15)
-          .text(d.annualChange)
-          .attr('fill', 'black')
+          .attr('y', yPosition - 5)
+          .text(d + "%")
+          .attr('fill', 'black');
 
-        console.log(d.annualChange)
+        d3.selectAll("#bar-chart")  //blur out the bar chart when hovering
+          .style("opacity", 0.2);
+        d3.select("path")
+          .style("filter", "none");
       })
       .on('mouseout', function () {
-        d3.select('#tooltip').style('opacity', 0)
+        d3.select('#tooltip').remove() //remove tool tip
+        d3.select('#tooltip-background').remove(); // remove background
+
+        d3.selectAll("rect")  //make the bar chart normal when not hovering the scatter plot
+          .style("opacity", 1);
       })
 
 
@@ -264,7 +310,6 @@ function init() {
         d3.selectAll("rect")
           .style("opacity", 1);
       });
-
 
   })
   //
