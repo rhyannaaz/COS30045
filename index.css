@@ -22,11 +22,20 @@
 	padding: 2px 16px;
 }
 
+.map-tooltip {
+  position: absolute;
+  background-color: #fff;
+  padding: 5px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  pointer-events: none;
+}
+
 span.text1 {
-	float: right;
+	/* float: right;
 	text-align: justify;
 	width: 45%;
-	margin-top: -25%;
+	margin-top: -25%; */
 }
 
 span.text2 {
