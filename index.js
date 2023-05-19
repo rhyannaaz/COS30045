@@ -20,85 +20,85 @@ function init() {
 
   function generateMap(adm1, countrieslabel) {
 
-      var width = 700;
-      var height = 600;
+    var width = 700;
+    var height = 600;
 
-      svg1 = d3.select('#chart1')
-          .append('svg')
-          .attr('width', width)
-          .attr('height', height);
+    svg1 = d3.select('#chart1')
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height);
 
-      var mapprojection = d3.geoMercator()
-          .center([47, 5])
-          .scale(2300)
-          .translate([width / 2, height / 2]);
+    var mapprojection = d3.geoMercator()
+      .center([47, 5])
+      .scale(2300)
+      .translate([width / 2, height / 2]);
 
-      var g = svg1.append('g').attr('id', 'adm1layer');
-      var path = g.selectAll('path')
-          .data(adm1.features)
-          .enter()
-          .append('path')
-          .attr('d', d3.geoPath().projection(mapprojection))
-          .attr('id', function(d) {
-              return d.properties.admin1Name;
-          })
-          .attr('class', function(d) {
-              var classname = (d.properties.admin1Name !== '0') ? 'adm1' : 'inactive';
-              return classname;
-          })
-          .attr('fill', function(d) {
-              var clr = (d.properties.admin1Name !== '0') ? fillColor : inactiveFillColor;
-              return clr;
-          })
-          .each(function(d) {
-              if (d.properties.admin1Name !== '0') {
-                  d3.select(this)
-                      .attr('stroke-width', 1)
-                      .attr('stroke', '#F8F5F2');
-              }
+    var g = svg1.append('g').attr('id', 'adm1layer');
+    var path = g.selectAll('path')
+      .data(adm1.features)
+      .enter()
+      .append('path')
+      .attr('d', d3.geoPath().projection(mapprojection))
+      .attr('id', function(d) {
+        return d.properties.admin1Name;
+      })
+      .attr('class', function(d) {
+        var classname = (d.properties.admin1Name !== '0') ? 'adm1' : 'inactive';
+        return classname;
+      })
+      .attr('fill', function(d) {
+        var clr = (d.properties.admin1Name !== '0') ? fillColor : inactiveFillColor;
+        return clr;
+      })
+      .each(function(d) {
+        if (d.properties.admin1Name !== '0') {
+          d3.select(this)
+            .attr('stroke-width', 1)
+            .attr('stroke', '#F8F5F2');
+        }
       });
 
       //map tooltips
       path.filter('.adm1')
-          .on('mouseover', function(d, event) {
-            d3.select(this)
-                .transition()
-                .duration(200);
-                // .attr('fill', hoverColor);
+        .on('mouseover', function(d, event) {
+          d3.select(this)
+            .transition()
+            .duration(200);
+            // .attr('fill', hoverColor);
 
+          var mouse = d3.pointer(event);
+          var tooltip = d3.select('#chart1')
+            .append('div')
+            .attr('class', 'map-tooltip')
+            .style("left", (mouse[0] + 90) + "px")
+            .style("top", (mouse[1] + 10) + "px")
+            .text(d && d.properties ? d.properties.admin1Name : '')
+          d3.select('#chart1').on('mousemove', function(event) {
             var mouse = d3.pointer(event);
-            var tooltip = d3.select('#chart1')
-              .append('div')
-              .attr('class', 'map-tooltip')
-              .style("left", (mouse[0] + 90) + "px")
-              .style("top", (mouse[1] + 10) + "px")
-              .text(d && d.properties ? d.properties.admin1Name : '')
-            d3.select('#chart1').on('mousemove', function(event) {
-              var mouse = d3.pointer(event);
-              tooltip.style('left', (mouse[0] + 10) + 'px')
-                .style('top', (mouse[1] + 10) + 'px');
-            });
-            console.log('Mouseover event');
-          })
-          .on('mouseout', function(d) {
-            d3.select('.map-tooltip').remove();
-            console.log('Mouseout event');
-          })
-          .on('click', function(d) {
-              if (d && d.properties && d.properties.admin1Name) {
-                  selectRegion(d3.select(this), d.properties.admin1Name);
-              }
-              console.log('Click event');
+            tooltip.style('left', (mouse[0] + 10) + 'px')
+              .style('top', (mouse[1] + 10) + 'px');
           });
+          console.log('Mouseover event');
+        })
+        .on('mouseout', function(d) {
+          d3.select('.map-tooltip').remove();
+          console.log('Mouseout event');
+        })
+        .on('click', function(d) {
+            if (d && d.properties && d.properties.admin1Name) {
+              selectRegion(d3.select(this), d.properties.admin1Name);
+            }
+            console.log('Click event');
+        });
   }
 
   function selectRegion(region, name) {
-      region.siblings().data('selected', false);
-      region.siblings('.adm1').attr('fill', fillColor);
-      region.attr('fill', hoverColor);
-      region.data('selected', true);
-      d3.select('.regionLabel > div > strong').html(name);
-      displayChart(name);
+    region.siblings().data('selected', false);
+    region.siblings('.adm1').attr('fill', fillColor);
+    region.attr('fill', hoverColor);
+    region.data('selected', true);
+    d3.select('.regionLabel > div > strong').html(name);
+    displayChart(name);
   }
 
   // Load json files
@@ -115,18 +115,18 @@ function init() {
   var year = 2022;
 
   Promise.all([adm1Call, somCall, countrieslabelCall, csvCall]).then(function(values) {
-      // Store data collected from loaded files
-      var adm1Args = values[0];
-      var somArgs = values[1];
-      var countrieslabelArgs = values[2];
-      var csvData = values[3];
-      var selectedYear = year;
-      // Extract the 'countries' property if 'countries.json' is provided, otherwise set it as an empty array
-      var countrieslabel = (countrieslabelArgs) ? countrieslabelArgs.countries : [];
-      // Call the 'generateMap' function with the loaded data
-      generateMap(somArgs, countrieslabel);
-      // Call the 'displayChart' function with the loaded CSV data
-      displayChart(csvData, selectedYear);
+    // Store data collected from loaded files
+    var adm1Args = values[0];
+    var somArgs = values[1];
+    var countrieslabelArgs = values[2];
+    var csvData = values[3];
+    var selectedYear = year;
+    // Extract the 'countries' property if 'countries.json' is provided, otherwise set it as an empty array
+    var countrieslabel = (countrieslabelArgs) ? countrieslabelArgs.countries : [];
+    // Call the 'generateMap' function with the loaded data
+    generateMap(somArgs, countrieslabel);
+    // Call the 'displayChart' function with the loaded CSV data
+    displayChart(csvData, selectedYear);
   });
 
   // Get all the year buttons
@@ -142,8 +142,8 @@ function init() {
   function displayChart(csvData, selectedYear) {
     // Parse the CSV data
     csvData.forEach(function(d) {
-        d.year = +d.year;
-        d.percentage = +d.percentage;
+      d.year = +d.year;
+      d.percentage = +d.percentage;
     });
 
     // Filter the data based on default year - 2022
@@ -153,23 +153,22 @@ function init() {
 
     // Create the color scale based on the percentage values
     var colorScale = d3.scaleLinear()
-        .domain([25, 50, 75, 90])
-        .range(['#F9EDDC', '#F4C0B3', '#EA6661', '#E53838']);
+      .domain([25, 50, 75, 90])
+      .range(['#F9EDDC', '#F4C0B3', '#EA6661', '#E53838']);
 
     // Update the fill color of the regions based on the percentage values
     svg1.selectAll('.adm1')
-        .attr('fill', function(d) {
-            var regionData = filteredData.find(function(data) {
-                return data.region === d.properties.admin1Name;
-            });
-            return regionData ? colorScale(regionData.percentage) : fillColor;
+      .attr('fill', function(d) {
+        var regionData = filteredData.find(function(data) {
+          return data.region === d.properties.admin1Name;
         });
+        return regionData ? colorScale(regionData.percentage) : fillColor;
+      });
   }
 
   //Visualization 1 END
 
   //Visualization 2 START
-
 
   // set the dimensions and margins of the graph
   margin = {top: 80, right: 135, bottom: 80, left: 150}
@@ -177,10 +176,10 @@ function init() {
   // append the svg object to the body of the page
   svg2 = d3.select("#chart2")
     .append("svg")
-      .attr("width", width + margin.left + margin.right + 100)
-      .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width + margin.left + margin.right + 100)
+    .attr("height", height + margin.top + margin.bottom)
     .append("g")
-      .attr("transform",`translate(${margin.left}, ${margin.top})`);
+    .attr("transform",`translate(${margin.left}, ${margin.top})`);
 
   // Parse the Data
   d3.csv("data/rural_urban_areas_total.csv").then( function(data) {
@@ -198,7 +197,6 @@ function init() {
     const stackedData = d3.stack()
       .keys(areas)
       (data)
-
 
     svg2.append("text")
       .attr("x", ((width + 150) / 2))
@@ -222,22 +220,22 @@ function init() {
 
     // Add X axis label:
     svg2.append("text")
-        .attr("text-anchor", "middle")
-        .attr("x", width/2)
-        .attr("y", height+60 )
-        .style('font-family', 'Arial')
-        .style("font-size", 20)
-        .text("Year");
+      .attr("text-anchor", "middle")
+      .attr("x", width/2)
+      .attr("y", height+60 )
+      .style('font-family', 'Arial')
+      .style("font-size", 20)
+      .text("Year");
 
     // Add Y axis label:
     svg2.append("text")
-        .attr('x', -240)
-        .attr("y", -100 )
-        .attr('transform', 'rotate(270)')
-        .text("Total Number of People Affected")
-        .style('font-family', 'Arial')
-        .style("font-size", 20)
-        .attr('text-anchor', 'middle')
+      .attr('x', -240)
+      .attr("y", -100 )
+      .attr('transform', 'rotate(270)')
+      .text("Total Number of People Affected")
+      .style('font-family', 'Arial')
+      .style("font-size", 20)
+      .attr('text-anchor', 'middle')
 
     // Add Y axis
     const y = d3.scaleLinear()
@@ -251,17 +249,17 @@ function init() {
     // BRUSHING AND CHART //
 
     const clip = svg2.append("defs").append("svg:clipPath")
-        .attr("id", "clip")
-        .append("svg:rect")
-        .attr("width", width )
-        .attr("height", height )
-        .attr("x", 0)
-        .attr("y", 0);
+      .attr("id", "clip")
+      .append("svg:rect")
+      .attr("width", width )
+      .attr("height", height )
+      .attr("x", 0)
+      .attr("y", 0);
 
     // Add brushing
     const brush = d3.brushX()
-        .extent( [ [0,0], [width,height] ] )
-        .on("end", updateAreaChart)
+      .extent( [ [0,0], [width,height] ] )
+      .on("end", updateAreaChart)
 
     const areaChart = svg2.append('g')
       .attr("clip-path", "url(#clip)")
@@ -277,16 +275,16 @@ function init() {
       .selectAll("mylayers")
       .data(stackedData)
       .join("path")
-        .attr("class", function(d) { return "myArea " + d.key })
-        .style("fill", function(d) { return color(d.key); })
-        .attr("d", area)
+      .attr("class", function(d) { return "myArea " + d.key })
+      .style("fill", function(d) { return color(d.key); })
+      .attr("d", area)
 
 
     // Add the brushing
     areaChart
       .append("g")
-        .attr("class", "brush")
-        .call(brush);
+      .attr("class", "brush")
+      .call(brush);
 
     let idleTimeout
     function idled() { idleTimeout = null; }
@@ -295,7 +293,6 @@ function init() {
     function updateAreaChart(event,d) {
 
       extent = event.selection
-
 
       if(!extent){
         if (!idleTimeout) return idleTimeout = setTimeout(idled, 350);
@@ -335,28 +332,28 @@ function init() {
       svg2.selectAll("myrect")
         .data(areas)
         .join("rect")
-          .attr("x", 770)
-          .attr("y", function(d,i){ return 10 + i*(size+5)})
-          .attr("width", size)
-          .attr("height", size)
-          .style("fill", function(d){ return color(d)})
-          .on("mouseover", highlight)
-          .on("mouseleave", noHighlight)
-
+        .attr("x", 770)
+        .attr("y", function(d,i){ return 10 + i*(size+5)})
+        .attr("width", size)
+        .attr("height", size)
+        .style("fill", function(d){ return color(d)})
+        .on("mouseover", highlight)
+        .on("mouseleave", noHighlight)
 
       // Add one dot in the legend for each name.
       svg2.selectAll("mylabels")
         .data(areas)
         .join("text")
-          .attr("x", 790 + size*1.2)
-          .attr("y", function(d,i){ return 10 + i*(size+5) + (size/2)})
-          .text(function(d){ return d})
-          .style('font-family', 'Arial')
-          .attr("text-anchor", "left")
-          .style("alignment-baseline", "middle")
-          .on("mouseover", highlight)
-          .on("mouseleave", noHighlight)
+        .attr("x", 790 + size*1.2)
+        .attr("y", function(d,i){ return 10 + i*(size+5) + (size/2)})
+        .text(function(d){ return d})
+        .style('font-family', 'Arial')
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
+        .on("mouseover", highlight)
+        .on("mouseleave", noHighlight)
   })
+
   //Visualization 2 END
 
 
@@ -557,7 +554,7 @@ function init() {
       });
 
   })
-  //
+
 
 
   //Visualization 3 END

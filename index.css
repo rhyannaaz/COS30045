@@ -11,15 +11,16 @@
 .card {
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 	transition: 0.3s;
-	width: 100%;
+	width: 95%;
 	border-radius: 5px;
 	border-style: solid;
 	border-width: thin;
 	border-color: #ced4da;
+	margin-left: 35px;
 }
 
 .container {
-	padding: 2px 16px;
+	padding: 30px 20px;
 }
 
 .map-tooltip {
@@ -66,4 +67,9 @@ span.text2 {
 
 span.text3 {
 	text-align: justify;
+}
+
+footer {
+	padding-top: 40px;
+	padding-bottom: 10px;
 }
