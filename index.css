@@ -9,10 +9,10 @@
 }
 
 .card {
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
 	transition: 0.3s;
 	width: 95%;
-	border-radius: 5px;
+	border-radius: 10px;
 	border-style: solid;
 	border-width: thin;
 	border-color: #ced4da;
