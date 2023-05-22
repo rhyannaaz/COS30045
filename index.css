@@ -117,7 +117,6 @@ body {
 	background-color: #fff;
 }
 
-<<<<<<< HEAD
 #container3 {
 	padding: 2px 16px;
 	display: grid;
@@ -128,10 +127,9 @@ body {
 
 h2 {
 	text-align: center;
-=======
+}
 .container {
 	padding: 30px 20px;
->>>>>>> af5aa7dbddf7bc729ddd9d09584e9fbecb16e1bd
 }
 
 .map-tooltip {
@@ -182,11 +180,9 @@ span.text2 {
 margin: 0 auto
 }
 
-<<<<<<< HEAD
 #chart1 {
 	width: 45%;
 }
-=======
 footer {
 	font-size: 18px;
 	padding-top: 90px;
@@ -196,4 +192,3 @@ footer {
 	margin-bottom: -50px;
 	margin-top: 20px
 }
->>>>>>> af5aa7dbddf7bc729ddd9d09584e9fbecb16e1bd
