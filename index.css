@@ -18,17 +18,25 @@
 	border-color: #ced4da;
 }
 
-.container {
+#container3 {
 	padding: 2px 16px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 20px;
+	text-align: center;
+}
+
+h2 {
+	text-align: center;
 }
 
 .map-tooltip {
-  position: absolute;
-  background-color: #fff;
-  padding: 5px;
-  font-size: 12px;
-  border: 1px solid #ccc;
-  pointer-events: none;
+	position: absolute;
+	background-color: #fff;
+	padding: 5px;
+	font-size: 12px;
+	border: 1px solid #ccc;
+	pointer-events: none;
 }
 
 span.text1 {
@@ -45,8 +53,8 @@ span.text2 {
 	margin-top: -15%; */
 }
 
-span.text3 {
-	text-align: justify;
+.text3 p {
+margin: 0 auto
 }
 
 #chart1 {
