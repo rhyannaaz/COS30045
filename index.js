@@ -347,12 +347,9 @@ function init() {
 
   d3.csv("data/consumer_price_food_indices_som.csv").then(function (data3) {
     var bar_number = data3.length
+    console.log(data3)
     var quarterlyChange = data3.map(function (d) {
       return Number(d.quarterlyChange);
-    });
-
-    var annualChange = data3.map(function (d) {
-      return Number(d.annualChange);
     });
 
     //add scale for visualization
@@ -377,12 +374,14 @@ function init() {
 
     svg3.append("g")
       .attr("transform", "translate(30," + height * (2 / 3) + ")")
-      .call(xAxis);
+      .call(xAxis)
+      .attr("marker-end","url(#arrow)");
 
     svg3.append("g")
       .attr("class", "grid")
       .attr("transform", "translate(30, 0)")
-      .call(yAxis);
+      .call(yAxis)
+      .attr("marker-end","url(#arrow)");
 
     svg3.selectAll(".grid line") //add grid line
       .style("stroke-width", "0.5px")
@@ -391,7 +390,7 @@ function init() {
 
     //add bars
     svg3.selectAll("rect")
-      .data(quarterlyChange)
+      .data(data3)
       .enter()
       .append("rect")
       .attr("id", "bar-chart")
@@ -399,18 +398,18 @@ function init() {
         return i * (width * (11 / 12) / bar_number) + 50;
       })
       .attr("y", function (d) {
-        if (d >= 0) {
-          return yScale(d);
+        if (d.quarterlyChange >= 0) {
+          return yScale(d.quarterlyChange);
         } else {
           return height * (2 / 3);
         }
       })
       .attr('width', width * (11 / 13) / bar_number - bar_padding)
       .attr('height', function (d) {
-        return Math.abs(height * 2 / 3 - yScale(d));
+        return Math.abs(height * 2 / 3 - yScale(d.quarterlyChange));
       })
       .attr("fill", "darkred")
-      .on("mouseover", function (event, d) {
+      .on("mouseover", function (event, d, i) {
         //hover effect to blur out line chart
         d3.selectAll("path")
           .style("opacity", 0.2);
@@ -429,7 +428,7 @@ function init() {
           .attr('id', 'tooltip-background')
           .attr('x', xPosition + 5)
           .attr('y', yPosition + 20)
-          .attr('width', 50)
+          .attr('width', 118)
           .attr('height', 20)
           .attr('fill', 'lightblue')
           .attr('opacity', 0.7)
@@ -441,9 +440,8 @@ function init() {
           .attr('id', 'tooltip')
           .attr('x', xPosition + 10)
           .attr('y', yPosition + 35)
-          .text(d + "%")
+          .text(d.Date + ": " + d.quarterlyChange + "%")
           .attr('fill', 'black');
-
       })
       .on("mouseout", function () {
         d3.selectAll("path")
@@ -460,17 +458,17 @@ function init() {
 
       })
     //
-
+      
     //scatter plot
     svg3.selectAll("circle")
-      .data(annualChange)
+      .data(data3)
       .enter()
       .append("circle")
       .attr("cx", function (d, i) {
         return i * (width * (11 / 12) / bar_number) + 64;
       })
       .attr("cy", function (d) {
-        return yScale(d);
+        return yScale(d.annualChange);
       })
       .attr("r", 8)
       .attr("fill", "darkgreen")
@@ -480,9 +478,9 @@ function init() {
 
         svg3.append('rect') //background for text when hovering
           .attr('id', 'tooltip-background')
-          .attr('x', xPosition + 5)
-          .attr('y', yPosition - 20)
-          .attr('width', 50)
+          .attr('x', xPosition - 68)
+          .attr('y', yPosition + 21)
+          .attr('width', 118)
           .attr('height', 20)
           .attr('fill', 'lightblue')
           .attr('opacity', 0.7)
@@ -492,9 +490,9 @@ function init() {
         svg3.append('text')   //display text when hovering
           .style("font", "14px sans-serif")
           .attr('id', 'tooltip')
-          .attr('x', xPosition + 10)
-          .attr('y', yPosition - 5)
-          .text(d + "%")
+          .attr('x', xPosition - 65)
+          .attr('y', yPosition + 35)
+          .text(d.Date + ": " + d.annualChange + "%")
           .attr('fill', 'black');
 
         d3.selectAll("#bar-chart")  //blur out the bar chart when hovering
