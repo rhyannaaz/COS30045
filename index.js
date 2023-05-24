@@ -13,27 +13,27 @@ function init() {
 
   //Visualization 1 START
 
-  var svg1, centered;
   var fillColor = '#dddddd';
-  var hoverColor = '#f24b2e';
   var inactiveFillColor = '#ffffff';
 
+  // Function to generate the map
   function generateMap(adm1, countrieslabel) {
-
-    var width = 700;
-    var height = 600;
-
+    // Select the SVG container for the map
     svg1 = d3.select('#chart1')
       .append('svg')
       .attr('width', width)
       .attr('height', height);
 
+    // Define the map projection
     var mapprojection = d3.geoMercator()
       .center([47, 5])
       .scale(2300)
       .translate([width / 2, height / 2]);
 
+    // Append a group element for the map features
     var g = svg1.append('g').attr('id', 'adm1layer');
+
+    // Draw the map paths
     var path = g.selectAll('path')
       .data(adm1.features)
       .enter()
@@ -58,88 +58,106 @@ function init() {
         }
       });
 
-      //map tooltips
-      path.filter('.adm1')
-        .on('mouseover', function(d, event) {
-          d3.select(this)
-            .transition()
-            .duration(200);
-            // .attr('fill', hoverColor);
-
-          var mouse = d3.pointer(event);
-          var tooltip = d3.select('#chart1')
-            .append('div')
-            .attr('class', 'map-tooltip')
-            .style("left", (mouse[0] + 90) + "px")
-            .style("top", (mouse[1] + 10) + "px")
-            .text(d && d.properties ? d.properties.admin1Name : '')
-          d3.select('#chart1').on('mousemove', function(event) {
-            var mouse = d3.pointer(event);
-            tooltip.style('left', (mouse[0] + 10) + 'px')
-              .style('top', (mouse[1] + 10) + 'px');
-          });
-          console.log('Mouseover event');
-        })
-        .on('mouseout', function(d) {
-          d3.select('.map-tooltip').remove();
-          console.log('Mouseout event');
-        })
-        .on('click', function(d) {
-            if (d && d.properties && d.properties.admin1Name) {
-              selectRegion(d3.select(this), d.properties.admin1Name);
-            }
-            console.log('Click event');
-        });
+    // Map tooltips
+    path.filter('.adm1')
+      .on('mouseover', handleMouseOver)
+      .on('mouseleave', handleMouseLeave)
+      .on('mousemove', handleMouseMove);
   }
 
-  function selectRegion(region, name) {
-    region.siblings().data('selected', false);
-    region.siblings('.adm1').attr('fill', fillColor);
-    region.attr('fill', hoverColor);
-    region.data('selected', true);
-    d3.select('.regionLabel > div > strong').html(name);
-    displayChart(name);
+  // create a tooltip
+  var Tooltip = d3.select("#chart1")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "rgb(223,224,220)")
+    .style("border", "solid")
+    .style("border-width", "2.5px")
+    .style("border-radius", "5px")
+    .style("padding", "7px")
+    .style("position", "absolute")
+    .style("text-align", "left");
+
+  // Function to handle mouseover event on map paths
+  function handleMouseOver(d) {
+    Tooltip
+      .style("opacity", 1);
+    d3.select(this)
+      .style("stroke", "red")
+      .style('stroke-width', 2)
+      .style("opacity", 1)
+      .transition()
+      .duration(500);
+    console.log('Mouseover event');
   }
+
+  // Function to handle mouseleave event on map paths
+  function handleMouseLeave(d) {
+    Tooltip
+      .style("opacity", 0)
+    d3.select(this)
+      .style("stroke", "#F8F5F2")
+      .style("opacity", 1);
+    console.log('Mouseleave event');
+  }
+
+  // Function to handle mousemove event on map paths
+  function handleMouseMove(d, event) {
+    var mouse = d3.pointer(event);
+
+    Tooltip
+      .style("left", (mouse[0] + 90) + "px")
+      .style("top", (mouse[1] + 10) + "px")
+      .html("Region: " + d.region + "<br>Population: " + d.population + "<br>Percentage: " + d.percentage);
+
+    console.log('Mousemove event');
+  }
+
+
+  // // Function to select a region on the map
+  // function selectRegion(region, name) {
+  //   region.siblings().data('selected', false);
+  //   region.siblings('.adm1').attr('fill', fillColor);
+  //   region.attr('fill', hoverColor);
+  //   region.data('selected', true);
+  //   d3.select('.regionLabel > div > strong').html(name);
+  //   displayChart(name);
+  // }
 
   // Load json files
   var somCall = d3.json('json/som-merged-topo.json');
   var adm1Call = d3.json('json/som_adm1.json');
+
   // Load Somalia details
   var countrieslabelCall = {
     "countries": [
       { "country": "Somalia", "coordinates": [46.1996, 5.1521] }
     ]
   };
-  // Load data file
-  var csvCall = d3.csv('data/acute_food_insecurity_by_region.csv');
-  var year = 2022;
 
+  // Load data file
+  var csvCall = d3.csv('data/acute_food_insecurity.csv');
+
+  // Use Promise.all to handle asynchronous loading of data
   Promise.all([adm1Call, somCall, countrieslabelCall, csvCall]).then(function(values) {
     // Store data collected from loaded files
     var adm1Args = values[0];
     var somArgs = values[1];
     var countrieslabelArgs = values[2];
     var csvData = values[3];
-    var selectedYear = year;
+
     // Extract the 'countries' property if 'countries.json' is provided, otherwise set it as an empty array
     var countrieslabel = (countrieslabelArgs) ? countrieslabelArgs.countries : [];
+
     // Call the 'generateMap' function with the loaded data
     generateMap(somArgs, countrieslabel);
+
     // Call the 'displayChart' function with the loaded CSV data
-    displayChart(csvData, selectedYear);
+    displayChart(csvData);
   });
 
-  // Get all the year buttons
-  var yearButtons = document.getElementsByClassName("year-btn");
-
-  // Attach event listeners to the buttons using a loop
-  for (var i = 0; i < yearButtons.length; i++) {
-    yearButtons[i].addEventListener("click", function() {
-      var year = parseInt(this.dataset.year); // Get the year value from the data attribute
-    });
-  }
-
-  function displayChart(csvData, selectedYear) {
+  // Function to display the chart based on CSV data
+  function displayChart(csvData) {
     // Parse the CSV data
     csvData.forEach(function(d) {
       d.year = +d.year;
@@ -148,7 +166,7 @@ function init() {
 
     // Filter the data based on default year - 2022
     var filteredData = csvData.filter(function(d) {
-      return d.year === selectedYear;
+      return d.year === 2022;
     });
 
     // Create the color scale based on the percentage values
@@ -165,6 +183,7 @@ function init() {
         return regionData ? colorScale(regionData.percentage) : fillColor;
       });
   }
+
 
   //Visualization 1 END
 
@@ -198,15 +217,6 @@ function init() {
       .keys(areas)
       (data)
 
-    svg2.append("text")
-      .attr("x", ((width + 150) / 2))
-      .attr("y", 0 - (margin.top / 2))
-      .attr("text-anchor", "middle")
-      .style("font-size", "26px")
-      .style('font-family', 'Arial')
-      .style("font-weight", "bold")
-      .text("Total Acute Food Insecurity in Somalia Regions (2015 - 2023)");
-
     // Add X axis
     const x = d3.scaleLinear()
       .domain([2015, 2023])
@@ -235,12 +245,13 @@ function init() {
       .text("Total Number of People Affected")
       .style('font-family', 'Arial')
       .style("font-size", 20)
-      .attr('text-anchor', 'middle')
+      .attr('text-anchor', 'middle');
 
     // Add Y axis
     const y = d3.scaleLinear()
       .domain([0, 10000000])
       .range([ height, 0 ]);
+
     svg2.append("g")
       .call(d3.axisLeft(y).ticks(10))
       .style('font-family', 'Arial')
@@ -332,7 +343,7 @@ function init() {
       svg2.selectAll("myrect")
         .data(areas)
         .join("rect")
-        .attr("x", 770)
+        .attr("x", 700)
         .attr("y", function(d,i){ return 10 + i*(size+5)})
         .attr("width", size)
         .attr("height", size)
@@ -344,7 +355,7 @@ function init() {
       svg2.selectAll("mylabels")
         .data(areas)
         .join("text")
-        .attr("x", 790 + size*1.2)
+        .attr("x", 720 + size*1.2)
         .attr("y", function(d,i){ return 10 + i*(size+5) + (size/2)})
         .text(function(d){ return d})
         .style('font-family', 'Arial')
@@ -355,7 +366,6 @@ function init() {
   })
 
   //Visualization 2 END
-
 
   //Visualization 3 START
 
@@ -476,7 +486,7 @@ function init() {
 
       })
     //
-      
+
     //scatter plot
     svg3.selectAll("circle")
       .data(data3)
