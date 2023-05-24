@@ -361,8 +361,9 @@ function init() {
 
   var svg3 = d3.select("#chart3")
     .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("width", width + margin.left + margin.right )
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("transform",`translate(${margin.left}, ${margin.top})`);
 
   d3.csv("data/consumer_price_food_indices_som.csv").then(function (data3) {
     var bar_number = data3.length
@@ -374,7 +375,6 @@ function init() {
     //add scale for visualization
     var xScale = d3.scaleBand()
       .range([0, width])
-      .domain(data3.map(function (d) { return d.date; }))
       .padding(bar_padding);
 
     var yScale = d3.scaleLinear()
@@ -392,13 +392,12 @@ function init() {
       .tickSizeInner(-width);
 
     svg3.append("g")
-      .attr("transform", "translate(30," + height * (2 / 3) + ")")
+      .attr("transform", "translate(0," + height * (2 / 3) + ")")
       .call(xAxis)
       .attr("marker-end","url(#arrow)");
 
     svg3.append("g")
       .attr("class", "grid")
-      .attr("transform", "translate(30, 0)")
       .call(yAxis)
       .attr("marker-end","url(#arrow)");
 
@@ -414,7 +413,7 @@ function init() {
       .append("rect")
       .attr("id", "bar-chart")
       .attr("x", function (d, i) {
-        return i * (width * (11 / 12) / bar_number) + 50;
+        return i * (width * (11/12) / bar_number) + 20;
       })
       .attr("y", function (d) {
         if (d.quarterlyChange >= 0) {
@@ -423,11 +422,11 @@ function init() {
           return height * (2 / 3);
         }
       })
-      .attr('width', width * (11 / 13) / bar_number - bar_padding)
+      .attr('width', width  / bar_number - bar_padding)
       .attr('height', function (d) {
         return Math.abs(height * 2 / 3 - yScale(d.quarterlyChange));
       })
-      .attr("fill", "darkred")
+      .attr("fill", "#FF6363")
       .on("mouseover", function (event, d, i) {
         //hover effect to blur out line chart
         d3.selectAll("path")
@@ -470,7 +469,7 @@ function init() {
         d3.selectAll("circle")
           .style("opacity", 1);
         d3.select(this)
-          .attr("fill", "darkred");
+          .attr("fill", "#FF6363");
 
         d3.select('#tooltip').remove() //remove tool tip
         d3.select('#tooltip-background').remove(); // remove background
@@ -484,13 +483,13 @@ function init() {
       .enter()
       .append("circle")
       .attr("cx", function (d, i) {
-        return i * (width * (11 / 12) / bar_number) + 64;
+        return i * (width * (11 / 12) / bar_number) + 34;
       })
       .attr("cy", function (d) {
         return yScale(d.annualChange);
       })
       .attr("r", 8)
-      .attr("fill", "darkgreen")
+      .attr("fill", "#1B9C85")
       .on('mouseover', function (event, d) {  //creat hover effect for scatter plot
         var xPosition = parseFloat(d3.select(this).attr('cx'))
         var yPosition = parseFloat(d3.select(this).attr('cy'))
@@ -529,7 +528,7 @@ function init() {
 
 
     var lineGenerator = d3.line()
-      .x(function (d, i) { return i * (width * (11 / 12) / bar_number) + 64; })
+      .x(function (d, i) { return i * (width * (11 / 12) / bar_number) + 34; })
       .y(function (d) { return yScale(d.annualChange); })
       .curve(d3.curveLinear);
 
@@ -537,7 +536,7 @@ function init() {
     svg3.append("path")
       .datum(data3)
       .attr("fill", "none")
-      .attr("stroke", "#2b8cbe")
+      .attr("stroke", "#FFE194")
       .attr("stroke-width", 5)
       .attr("d", lineGenerator)
       .on("mouseover", function () { // hover efect to blur out bar chart
