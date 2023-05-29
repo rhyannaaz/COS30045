@@ -65,7 +65,6 @@ function init() {
 
         var map = svg1.append('g').attr('id', 'adm1layer');
 
-
         map.selectAll('path')
           .data(adm1.features)
           .enter()
@@ -145,6 +144,63 @@ function init() {
             });
             return regionData ? colorScale(regionData.percentage) : fillColor;
           });
+
+        // Add the legend
+        var legend = svg1.append("g")
+          .attr("transform", "translate(" + (width - 60) + "," + 30 + ")");
+
+        // Add one dot in the legend for each name.
+        var allgroups = ["25%", "50%", "75%", "90%"];
+
+        legend.selectAll()
+          .data(allgroups)
+          .enter()
+          .append("text")
+            .attr('x', 30)  // Move labels to the right of the rectangles
+            .attr('y', function(d,i){ return 30 * i + 12;}) // Align labels with the center of the rectangles
+            .style("fill", function(d){ return colorScale(d);})
+            .text(function(d){ return d;})
+            .attr("text-anchor", "left")
+            .style("alignment-baseline", "middle")
+            .style("font-size", 15);
+
+        // Add one dot in the legend for each name.
+        var legendDots = legend.selectAll()
+          .data(colorScale.range())
+          .enter()
+          .append("rect")
+            .attr('x', 0)
+            .attr('y', function(d, i){ return 30 * i; })  // Stacking rectangles vertically
+            .attr('width', 20)
+            .attr('height', 20)
+            .style("fill", function(d){ return d; })
+            .on("mouseover", handleLegendMouseOver)
+            .on("mouseout", handleLegendMouseOut);
+
+        // Function to handle mouseover event on legend dots
+        function handleLegendMouseOver(d) {
+          // Reduce opacity of all map paths
+          svg1.selectAll('.adm1')
+            .style("opacity", 0.3);
+          // Highlight the corresponding color on the map
+          svg1.selectAll('.adm1')
+            .filter(function(data) {
+              var regionData = filteredData.find(function(data) {
+                return data.region === data.properties.admin1Name;
+              });
+              return regionData && regionData.percentage >= d;
+            })
+            .style("opacity", 1);
+        }
+
+        // Function to handle mouseout event on legend dots
+        function handleLegendMouseOut(d) {
+          // Restore opacity of all map paths
+          svg1.selectAll('.adm1')
+            .style("opacity", 1);
+        }
+
+
       });
     });
   });
