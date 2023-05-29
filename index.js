@@ -6,10 +6,11 @@
 
 function init() {
 
-  // Define the SVG width and height
+  // Define the SVG width, height bar paddng, and margin
   var width = 700;
   var height = 600;
   var bar_padding = 5;
+  margin = {top: 80, right: 135, bottom: 80, left: 150}
 
   //Visualization 1 START
 
@@ -27,12 +28,40 @@ function init() {
 
   var fillColor = '#dddddd';
   var inactiveFillColor = '#ffffff';
+  var csvData; // Declare csvData as a global variable
+
+  // Function to generate the map and update the fill color based on the year
+  function generateMap(year) {
+    // Filter the data based on the selected year
+    var filteredData = csvData.filter(function(d) {
+      return d.year === year;
+    });
+
+    // Update the fill color of the regions based on the percentage values
+    svg1.selectAll('.adm1')
+      .attr('fill', function(d) {
+        var regionData = filteredData.find(function(csvData) {
+          return csvData.region === d.properties.admin1Name;
+        });
+        if (regionData) {
+          var percentage = regionData.percentage;
+          return percentage <= 100 && percentage > 75 ? '#93191A'
+            : percentage <= 75 && percentage > 50 ? '#ED1E23'
+            : percentage <= 50 && percentage > 25 ? '#FBA918'
+            : percentage <= 25 ? '#F7EB17'
+            : fillColor;
+        } else {
+          return fillColor;
+        }
+      });
+  }
 
   // Load JSON files
   d3.json('json/som-merged-topo.json').then(function(adm1) {
     d3.json('json/som_adm1.json').then(function(somArgs) {
       // Load data file
       d3.csv('data/acute_food_insecurity.csv').then(function(csvData) {
+
         // Parse the CSV data
         csvData.forEach(function(d) {
           d.year = +d.year;
@@ -45,10 +74,56 @@ function init() {
           return d.year === 2022;
         });
 
+        // // Generate the map for the initial year (2022)
+        // generateMap(2022);
+
+        // Add event listeners to the buttons
+        d3.select('#button1').on('click', function() {
+          var filteredData = csvData.filter(function(d) {
+            return d.year === 2017;
+          });
+          console.log('onClick button1 event');
+        });
+
+        d3.select('#button2').on('click', function() {
+          var filteredData = csvData.filter(function(d) {
+            return d.year === 2018;
+          });
+          console.log('onClick button2 event');
+        });
+
+        d3.select('#button3').on('click', function() {
+          var filteredData = csvData.filter(function(d) {
+            return d.year === 2019;
+          });
+          console.log('onClick button3 event');
+        });
+
+        d3.select('#button4').on('click', function() {
+          var filteredData = csvData.filter(function(d) {
+            return d.year === 2020;
+          });
+          console.log('onClick button4 event');
+        });
+
+        d3.select('#button5').on('click', function() {
+          var filteredData = csvData.filter(function(d) {
+            return d.year === 2021;
+          });
+          console.log('onClick button5 event');
+        });
+
+        d3.select('#button6').on('click', function() {
+          var filteredData = csvData.filter(function(d) {
+            return d.year === 2022;
+          });
+          console.log('onClick button6 event');
+        });
+
         // Create the color scale based on the percentage values
         var colorScale = d3.scaleLinear()
-          .domain([25, 50, 75, 90])
-          .range(['#F7EB17', '#FBA918', '#ED1E23', '#93191A']);
+          .domain([20, 40, 60, 80, 100])
+          .range(['#C4FACA', '#F7EB17', '#FBA918', '#ED1E23', '#93191A']);
 
         // Generate the map
         var projection = d3.geoMercator()
@@ -60,7 +135,7 @@ function init() {
 
         var svg1 = d3.select('#chart1')
           .append('svg')
-          .attr('width', width)
+          .attr('width', width + margin.left + margin.right - 50)
           .attr('height', height);
 
         var map = svg1.append('g').attr('id', 'adm1layer');
@@ -124,7 +199,7 @@ function init() {
 
             // Update the tooltip position and content
             Tooltip
-              .style("left", (d3.pointer(event)[0] + 300) + "px")
+              .style("left", (d3.pointer(event)[0] + 200) + "px")
               .style("top", (d3.pointer(event)[1] + 20) + "px")
               .html("Region: " + d.properties.admin1Name + "<br>Population: " +
               regionData.population + "<br>Percentage: " + regionData.percentage + "%");
@@ -144,10 +219,11 @@ function init() {
             });
             if (regionData) {
               var percentage = regionData.percentage;
-              return percentage <= 100 && percentage > 75 ? '#93191A'
-                : percentage <= 75 && percentage > 50 ? '#ED1E23'
-                : percentage <= 50 && percentage > 25 ? '#FBA918'
-                : percentage <= 25 ? '#F7EB17'
+              return percentage <= 100 && percentage > 80 ? '#93191A'
+                : percentage <= 80 && percentage > 60 ? '#ED1E23'
+                : percentage <= 60 && percentage > 40 ? '#FBA918'
+                : percentage <= 40 && percentage > 20 ? '#F7EB17'
+                : percentage <= 20 ? '#C4FACA'
                 : fillColor;
             } else {
               return fillColor;
@@ -156,10 +232,10 @@ function init() {
 
         // Add the legend
         var legend = svg1.append("g")
-          .attr("transform", "translate(" + (width - 60) + "," + 30 + ")");
+          .attr("transform", "translate(" + (width - 90) + "," + 30 + ")");
 
         // Add one dot in the legend for each name.
-        var allgroups = ["25%", "50%", "75%", "90%"];
+        var allgroups = ["Minimal (IPC Phase 1)", "Stressed (IPC Phase 2)", "Crisis (IPC Phase 3)", "Emergency (IPC Phase 4)", "Famine (IPC Phase 5)"];
 
         legend.selectAll()
           .data(allgroups)
@@ -171,7 +247,7 @@ function init() {
             .text(function(d){ return d;})
             .attr("text-anchor", "left")
             .style("alignment-baseline", "middle")
-            .style("font-size", 15);
+            .style("font-size", 14);
 
         // Add one dot in the legend for each name.
         var legendDots = legend.selectAll()
@@ -183,30 +259,6 @@ function init() {
             .attr('width', 20)
             .attr('height', 20)
             .style("fill", function(d){ return d; })
-        //     .on("mouseover", handleLegendMouseOver)
-        //     .on("mouseout", handleLegendMouseOut);
-        //
-        // // Function to handle mouseover event on legend dots
-        // function handleLegendMouseOver(d) {
-        //   // Reduce opacity of all map paths
-        //   svg1.selectAll('.adm1').style('opacity', 0.3);
-        //
-        //   // Highlight the corresponding map paths
-        //   svg1.selectAll('.adm1')
-        //     .filter(function(data) {
-        //       var regionData = filteredData.find(function(data) {
-        //         return data.region === data.properties.admin1Name;
-        //       });
-        //       return regionData && regionData.percentage >= parseInt(d);
-        //     })
-        //     .style('opacity', 1);
-        // }
-        //
-        // // Function to handle mouseout event on legend dots
-        // function handleLegendMouseOut() {
-        //   // Restore opacity of all map paths
-        //   svg1.selectAll('.adm1').style('opacity', 1);
-        // }
 
       });
     });
@@ -215,9 +267,6 @@ function init() {
   //Visualization 1 END
 
   //Visualization 2 START
-
-  // set the dimensions and margins of the graph
-  margin = {top: 80, right: 135, bottom: 80, left: 150}
 
   // append the svg object to the body of the page
   svg2 = d3.select("#chart2")
