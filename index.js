@@ -49,6 +49,12 @@ function init() {
           return d.year === 2022;
         });
 
+        // Change the color of the button6 if the year is 2022
+        if (filteredData.length > 0) {
+          d3.select('#button6')
+            .style('background-color', '#93191A');
+        }
+
         // // Generate the map for the initial year (2022)
         // generateMap(2022);
 
@@ -110,7 +116,7 @@ function init() {
 
         var svg1 = d3.select('#chart1')
           .append('svg')
-          .attr('width', width + margin.left + margin.right - 50)
+          .attr('width', width)
           .attr('height', height);
 
         var map = svg1.append('g').attr('id', 'adm1layer');
@@ -174,7 +180,7 @@ function init() {
 
             // Update the tooltip position and content
             Tooltip
-              .style("left", (d3.pointer(event)[0] + 200) + "px")
+              .style("left", (d3.pointer(event)[0] + 300) + "px")
               .style("top", (d3.pointer(event)[1] + 20) + "px")
               .html("Region: " + d.properties.admin1Name + "<br>Population: " +
               regionData.population + "<br>Percentage: " + regionData.percentage + "%");
@@ -207,7 +213,7 @@ function init() {
 
         // Add the legend
         var legend = svg1.append("g")
-          .attr("transform", "translate(" + (width - 90) + "," + 30 + ")");
+          .attr("transform", "translate(" + (width - 200) + "," + (height - 200) + ")"); // Update the transform attribute
 
         // Add one dot in the legend for each name.
         var allgroups = ["Minimal (IPC Phase 1)", "Stressed (IPC Phase 2)", "Crisis (IPC Phase 3)", "Emergency (IPC Phase 4)", "Famine (IPC Phase 5)"];
