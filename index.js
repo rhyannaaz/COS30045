@@ -30,31 +30,6 @@ function init() {
   var inactiveFillColor = '#ffffff';
   var csvData; // Declare csvData as a global variable
 
-  // Function to generate the map and update the fill color based on the year
-  function generateMap(year) {
-    // Filter the data based on the selected year
-    var filteredData = csvData.filter(function(d) {
-      return d.year === year;
-    });
-
-    // Update the fill color of the regions based on the percentage values
-    svg1.selectAll('.adm1')
-      .attr('fill', function(d) {
-        var regionData = filteredData.find(function(csvData) {
-          return csvData.region === d.properties.admin1Name;
-        });
-        if (regionData) {
-          var percentage = regionData.percentage;
-          return percentage <= 100 && percentage > 75 ? '#93191A'
-            : percentage <= 75 && percentage > 50 ? '#ED1E23'
-            : percentage <= 50 && percentage > 25 ? '#FBA918'
-            : percentage <= 25 ? '#F7EB17'
-            : fillColor;
-        } else {
-          return fillColor;
-        }
-      });
-  }
 
   // Load JSON files
   d3.json('json/som-merged-topo.json').then(function(adm1) {
