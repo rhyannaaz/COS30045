@@ -142,7 +142,16 @@ function init() {
             var regionData = filteredData.find(function(data) {
               return data.region === d.properties.admin1Name;
             });
-            return regionData ? colorScale(regionData.percentage) : fillColor;
+            if (regionData) {
+              var percentage = regionData.percentage;
+              return percentage <= 100 && percentage > 75 ? '#93191A'
+                : percentage <= 75 && percentage > 50 ? '#ED1E23'
+                : percentage <= 50 && percentage > 25 ? '#FBA918'
+                : percentage <= 25 ? '#F7EB17'
+                : fillColor;
+            } else {
+              return fillColor;
+            }
           });
 
         // Add the legend
@@ -174,32 +183,30 @@ function init() {
             .attr('width', 20)
             .attr('height', 20)
             .style("fill", function(d){ return d; })
-            .on("mouseover", handleLegendMouseOver)
-            .on("mouseout", handleLegendMouseOut);
-
-        // Function to handle mouseover event on legend dots
-        function handleLegendMouseOver(d) {
-          // Reduce opacity of all map paths
-          svg1.selectAll('.adm1')
-            .style("opacity", 0.3);
-          // Highlight the corresponding color on the map
-          svg1.selectAll('.adm1')
-            .filter(function(data) {
-              var regionData = filteredData.find(function(data) {
-                return data.region === data.properties.admin1Name;
-              });
-              return regionData && regionData.percentage >= d;
-            })
-            .style("opacity", 1);
-        }
-
-        // Function to handle mouseout event on legend dots
-        function handleLegendMouseOut(d) {
-          // Restore opacity of all map paths
-          svg1.selectAll('.adm1')
-            .style("opacity", 1);
-        }
-
+        //     .on("mouseover", handleLegendMouseOver)
+        //     .on("mouseout", handleLegendMouseOut);
+        //
+        // // Function to handle mouseover event on legend dots
+        // function handleLegendMouseOver(d) {
+        //   // Reduce opacity of all map paths
+        //   svg1.selectAll('.adm1').style('opacity', 0.3);
+        //
+        //   // Highlight the corresponding map paths
+        //   svg1.selectAll('.adm1')
+        //     .filter(function(data) {
+        //       var regionData = filteredData.find(function(data) {
+        //         return data.region === data.properties.admin1Name;
+        //       });
+        //       return regionData && regionData.percentage >= parseInt(d);
+        //     })
+        //     .style('opacity', 1);
+        // }
+        //
+        // // Function to handle mouseout event on legend dots
+        // function handleLegendMouseOut() {
+        //   // Restore opacity of all map paths
+        //   svg1.selectAll('.adm1').style('opacity', 1);
+        // }
 
       });
     });
