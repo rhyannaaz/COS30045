@@ -17,7 +17,7 @@ function init() {
   var Tooltip = d3.select("#chart1")
     .append("div")
     .style("opacity", 0)
-    .attr("class", "tooltip")
+    .attr("class", "map-tooltip")
     .style("background-color", "white")
     .style("border", "solid")
     .style("padding", "7px")
@@ -126,7 +126,8 @@ function init() {
             Tooltip
               .style("left", (mouse[0] + 90) + "px")
               .style("top", (mouse[1] + 10) + "px")
-              .html("Region: " + d.properties.admin1Name + "<br>Population: " + regionData.population + "<br>Percentage: " + regionData.percentage);
+              .html("Region: " + d.properties.admin1Name + "<br>Population: " +
+              regionData.population + "<br>Percentage: " + regionData.percentage + "%");
 
             Tooltip.style("opacity", 1); // Show the tooltip
           } else {
@@ -165,8 +166,6 @@ function init() {
 
   // Parse the Data
   d3.csv("data/rural_urban_areas_total.csv").then( function(data) {
-
-    //GENERAL//
 
     const areas = data.columns.slice(1)
 
