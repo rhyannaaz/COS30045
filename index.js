@@ -13,176 +13,139 @@ function init() {
 
   //Visualization 1 START
 
-  var fillColor = '#dddddd';
-  var inactiveFillColor = '#ffffff';
-
-  // Function to generate the map
-  function generateMap(adm1, countrieslabel) {
-    // Select the SVG container for the map
-    svg1 = d3.select('#chart1')
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height);
-
-    // Define the map projection
-    var mapprojection = d3.geoMercator()
-      .center([47, 5])
-      .scale(2300)
-      .translate([width / 2, height / 2]);
-
-    // Append a group element for the map features
-    var g = svg1.append('g').attr('id', 'adm1layer');
-
-    // Draw the map paths
-    var path = g.selectAll('path')
-      .data(adm1.features)
-      .enter()
-      .append('path')
-      .attr('d', d3.geoPath().projection(mapprojection))
-      .attr('id', function(d) {
-        return d.properties.admin1Name;
-      })
-      .attr('class', function(d) {
-        var classname = (d.properties.admin1Name !== '0') ? 'adm1' : 'inactive';
-        return classname;
-      })
-      .attr('fill', function(d) {
-        var clr = (d.properties.admin1Name !== '0') ? fillColor : inactiveFillColor;
-        return clr;
-      })
-      .each(function(d) {
-        if (d.properties.admin1Name !== '0') {
-          d3.select(this)
-            .attr('stroke-width', 1)
-            .attr('stroke', '#F8F5F2');
-        }
-      });
-
-    // Map tooltips
-    path.filter('.adm1')
-      .on('mouseover', handleMouseOver)
-      .on('mouseleave', handleMouseLeave)
-      .on('mousemove', handleMouseMove);
-  }
-
-  // create a tooltip
+  // Create a tooltip
   var Tooltip = d3.select("#chart1")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
-    .style("background-color", "rgb(223,224,220)")
+    .style("background-color", "white")
     .style("border", "solid")
-    .style("border-width", "2.5px")
-    .style("border-radius", "5px")
     .style("padding", "7px")
     .style("position", "absolute")
     .style("text-align", "left");
 
-  // Function to handle mouseover event on map paths
-  function handleMouseOver(d) {
-    Tooltip
-      .style("opacity", 1);
-    d3.select(this)
-      .style("stroke", "red")
-      .style('stroke-width', 2)
-      .style("opacity", 1)
-      .transition()
-      .duration(500);
-    console.log('Mouseover event');
-  }
+  var fillColor = '#dddddd';
+  var inactiveFillColor = '#ffffff';
 
-  // Function to handle mouseleave event on map paths
-  function handleMouseLeave(d) {
-    Tooltip
-      .style("opacity", 0)
-    d3.select(this)
-      .style("stroke", "#F8F5F2")
-      .style("opacity", 1);
-    console.log('Mouseleave event');
-  }
-
-  // Function to handle mousemove event on map paths
-  function handleMouseMove(d, event) {
-    var mouse = d3.pointer(event);
-
-    Tooltip
-      .style("left", (mouse[0] + 90) + "px")
-      .style("top", (mouse[1] + 10) + "px")
-      .html("Region: " + d.region + "<br>Population: " + d.population + "<br>Percentage: " + d.percentage);
-
-    console.log('Mousemove event');
-  }
-
-
-  // // Function to select a region on the map
-  // function selectRegion(region, name) {
-  //   region.siblings().data('selected', false);
-  //   region.siblings('.adm1').attr('fill', fillColor);
-  //   region.attr('fill', hoverColor);
-  //   region.data('selected', true);
-  //   d3.select('.regionLabel > div > strong').html(name);
-  //   displayChart(name);
-  // }
-
-  // Load json files
-  var somCall = d3.json('json/som-merged-topo.json');
-  var adm1Call = d3.json('json/som_adm1.json');
-
-  // Load Somalia details
-  var countrieslabelCall = {
-    "countries": [
-      { "country": "Somalia", "coordinates": [46.1996, 5.1521] }
-    ]
-  };
-
-  // Load data file
-  var csvCall = d3.csv('data/acute_food_insecurity.csv');
-
-  // Use Promise.all to handle asynchronous loading of data
-  Promise.all([adm1Call, somCall, countrieslabelCall, csvCall]).then(function(values) {
-    // Store data collected from loaded files
-    var adm1Args = values[0];
-    var somArgs = values[1];
-    var countrieslabelArgs = values[2];
-    var csvData = values[3];
-
-    // Extract the 'countries' property if 'countries.json' is provided, otherwise set it as an empty array
-    var countrieslabel = (countrieslabelArgs) ? countrieslabelArgs.countries : [];
-
-    // Call the 'generateMap' function with the loaded data
-    generateMap(somArgs, countrieslabel);
-
-    // Call the 'displayChart' function with the loaded CSV data
-    displayChart(csvData);
-  });
-
-  // Function to display the chart based on CSV data
-  function displayChart(csvData) {
-    // Parse the CSV data
-    csvData.forEach(function(d) {
-      d.year = +d.year;
-      d.percentage = +d.percentage;
-    });
-
-    // Filter the data based on default year - 2022
-    var filteredData = csvData.filter(function(d) {
-      return d.year === 2022;
-    });
-
-    // Create the color scale based on the percentage values
-    var colorScale = d3.scaleLinear()
-      .domain([25, 50, 75, 90])
-      .range(['#F9EDDC', '#F4C0B3', '#EA6661', '#E53838']);
-
-    // Update the fill color of the regions based on the percentage values
-    svg1.selectAll('.adm1')
-      .attr('fill', function(d) {
-        var regionData = filteredData.find(function(data) {
-          return data.region === d.properties.admin1Name;
+  // Load JSON files
+  d3.json('json/som-merged-topo.json').then(function(adm1) {
+    d3.json('json/som_adm1.json').then(function(somArgs) {
+      // Load data file
+      d3.csv('data/acute_food_insecurity.csv').then(function(csvData) {
+        // Parse the CSV data
+        csvData.forEach(function(d) {
+          d.year = +d.year;
+          d.percentage = +d.percentage;
+          d.population = +d.population;
         });
-        return regionData ? colorScale(regionData.percentage) : fillColor;
+
+        // Filter the data based on default year - 2022
+        var filteredData = csvData.filter(function(d) {
+          return d.year === 2022;
+        });
+
+        // Create the color scale based on the percentage values
+        var colorScale = d3.scaleLinear()
+          .domain([25, 50, 75, 90])
+          .range(['#F7EB17', '#FBA918', '#ED1E23', '#93191A']);
+
+        // Generate the map
+        var projection = d3.geoMercator()
+          .center([47, 5])
+          .scale(2300)
+          .translate([width / 2, height / 2]);
+
+        var path = d3.geoPath().projection(projection);
+
+        var svg1 = d3.select('#chart1')
+          .append('svg')
+          .attr('width', width)
+          .attr('height', height);
+
+        var map = svg1.append('g').attr('id', 'adm1layer');
+
+        map.selectAll('path')
+          .data(adm1.features)
+          .enter()
+          .append('path')
+          .attr('d', path)
+          .attr('id', function(d) {
+            return d.properties.admin1Name;
+          })
+          .attr('class', function(d) {
+            return (d.properties.admin1Name !== '0') ? 'adm1' : 'inactive';
+          })
+          .attr('fill', function(d) {
+            return (d.properties.admin1Name !== '0') ? fillColor : inactiveFillColor;
+          })
+          .each(function(d) {
+            if (d.properties.admin1Name !== '0') {
+              d3.select(this)
+                .attr('stroke-width', 2)
+                .attr('stroke', '#FFFFFF');
+            }
+          })
+          .on('mouseover', handleMouseOver)
+          .on('mouseleave', handleMouseLeave)
+          .on('mousemove', handleMouseMove);
+
+        // Function to handle mouseover event on map paths
+        function handleMouseOver(d) {
+          Tooltip.style("opacity", 1);
+          d3.select(this)
+            .style("stroke", function(d) {
+              return d.properties.admin1Name === '0' ? "white" : "red"})
+            .style('stroke-width', 2)
+            .style("opacity", 1)
+            .transition()
+            .duration(500);
+          console.log('Mouseover event');
+        }
+
+        // Function to handle mouseleave event on map paths
+        function handleMouseLeave(d) {
+          Tooltip.style("opacity", 0);
+          d3.select(this)
+            .style("stroke", "#FFFFFF")
+            .style("opacity", 1);
+          console.log('Mouseleave event');
+        }
+
+        // Function to handle mousemove event on map paths
+        function handleMouseMove(d) {
+          var d = this.__data__; // Access the feature data
+          var mouse = d3.pointer(this);
+
+          // Check if admin1Name is not '0' before showing the tooltip
+          if (d.properties.admin1Name !== '0') {
+            var regionData = filteredData.find(function(data) {
+              return data.region === d.properties.admin1Name;
+            });
+
+            // Update the tooltip position and content
+            Tooltip
+              .style("left", (mouse[0] + 90) + "px")
+              .style("top", (mouse[1] + 10) + "px")
+              .html("Region: " + d.properties.admin1Name + "<br>Population: " + regionData.population + "<br>Percentage: " + regionData.percentage);
+
+            Tooltip.style("opacity", 1); // Show the tooltip
+          } else {
+            Tooltip.style("opacity", 0); // Hide the tooltip
+          }
+          console.log('Mousemove event');
+        }
+
+        // Update the fill color of the regions based on the percentage values
+        svg1.selectAll('.adm1')
+          .attr('fill', function(d) {
+            var regionData = filteredData.find(function(data) {
+              return data.region === d.properties.admin1Name;
+            });
+            return regionData ? colorScale(regionData.percentage) : fillColor;
+          });
       });
-  }
+    });
+  });
 
 
   //Visualization 1 END
