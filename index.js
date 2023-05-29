@@ -20,6 +20,7 @@ function init() {
     .attr("class", "map-tooltip")
     .style("background-color", "white")
     .style("border", "solid")
+    .style("border-radius", "5px")
     .style("padding", "7px")
     .style("position", "absolute")
     .style("text-align", "left");
@@ -63,6 +64,7 @@ function init() {
           .attr('height', height);
 
         var map = svg1.append('g').attr('id', 'adm1layer');
+
 
         map.selectAll('path')
           .data(adm1.features)
@@ -112,9 +114,8 @@ function init() {
         }
 
         // Function to handle mousemove event on map paths
-        function handleMouseMove(d) {
-          var d = this.__data__; // Access the feature data
-          var mouse = d3.pointer(this);
+        function handleMouseMove(event, d) {
+          var d = d; // Access the feature data
 
           // Check if admin1Name is not '0' before showing the tooltip
           if (d.properties.admin1Name !== '0') {
@@ -124,8 +125,8 @@ function init() {
 
             // Update the tooltip position and content
             Tooltip
-              .style("left", (mouse[0] + 90) + "px")
-              .style("top", (mouse[1] + 10) + "px")
+              .style("left", (d3.pointer(event)[0] + 300) + "px")
+              .style("top", (d3.pointer(event)[1] + 20) + "px")
               .html("Region: " + d.properties.admin1Name + "<br>Population: " +
               regionData.population + "<br>Percentage: " + regionData.percentage + "%");
 
@@ -147,7 +148,6 @@ function init() {
       });
     });
   });
-
 
   //Visualization 1 END
 
