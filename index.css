@@ -132,16 +132,15 @@ body {
 }
 
 #chart1 {
+	position: relative;
 	padding-bottom: 0.5rem;
 	clear: both;
 	padding-bottom: 1.5rem;
 	text-align: center;
-	/* position: absolute; */
 }
 
 #chart2 {
 	text-align: right;
-	margin-left: 35%;
 	scale: 0.8;
 }
 
@@ -154,11 +153,15 @@ h2 {
 }
 
 .map-tooltip {
-	background-color: #fff;
-	padding: 5px;
-	font-size: 12px;
-	border: 1px solid #ccc;
-	pointer-events: none;
+	position: absolute;
+  pointer-events: none;
+  background-color: white;
+  border: solid 1px #ccc;
+  padding: 7px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 10;
 }
 
 #buttons {
@@ -176,7 +179,7 @@ button {
 	font-weight: bold;
 	color: white;
 	font-size: 1rem;
-	background-color: #ED6A2C;
+	background-color: #8DB9B8;
 	transition-duration: 0.3s;
 }
 

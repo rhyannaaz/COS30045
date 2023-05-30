@@ -6,13 +6,15 @@
 
 function init() {
 
-  // Define the SVG width and height
+  // Define the SVG width, height bar paddng, and margin
   var width = 700;
   var height = 600;
   var bar_padding = 5;
+  margin = {top: 80, right: 135, bottom: 80, left: 150}
 
   //Visualization 1 START
 
+<<<<<<< HEAD
   var fillColor = '#dddddd';
   var inactiveFillColor = '#ffffff';
 
@@ -66,41 +68,29 @@ function init() {
   }
 
   // create a tooltip
+=======
+  // Create a tooltip
+>>>>>>> 09825fce7179c32c7bf39077b50d875074cd5621
   var Tooltip = d3.select("#chart1")
     .append("div")
     .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "rgb(223,224,220)")
+    .attr("class", "map-tooltip")
+    .style("background-color", "white")
     .style("border", "solid")
-    .style("border-width", "2.5px")
     .style("border-radius", "5px")
     .style("padding", "7px")
     .style("position", "absolute")
     .style("text-align", "left");
 
-  // Function to handle mouseover event on map paths
-  function handleMouseOver(d) {
-    Tooltip
-      .style("opacity", 1);
-    d3.select(this)
-      .style("stroke", "red")
-      .style('stroke-width', 2)
-      .style("opacity", 1)
-      .transition()
-      .duration(500);
-    console.log('Mouseover event');
-  }
+  var fillColor = '#dddddd';
+  var inactiveFillColor = '#ffffff';
+  var csvData; // Declare csvData as a global variable
+  var year = 2022;
+  var svg1;
 
-  // Function to handle mouseleave event on map paths
-  function handleMouseLeave(d) {
-    Tooltip
-      .style("opacity", 0)
-    d3.select(this)
-      .style("stroke", "#F8F5F2")
-      .style("opacity", 1);
-    console.log('Mouseleave event');
-  }
+  updateMap(year);
 
+<<<<<<< HEAD
   // Function to handle mousemove event on map paths
   function handleMouseMove(d, event) {
     var mouse = d3.pointer(event);
@@ -168,30 +158,236 @@ function init() {
     var filteredData = csvData.filter(function (d) {
       return d.year === 2022;
     });
+=======
+  // Add event listeners to the buttons
+  d3.select('#button1').on('click', function() {
+    updateMap(2017);
+    console.log('onClick button1 event');
+  });
 
-    // Create the color scale based on the percentage values
-    var colorScale = d3.scaleLinear()
-      .domain([25, 50, 75, 90])
-      .range(['#F9EDDC', '#F4C0B3', '#EA6661', '#E53838']);
+  // Add event listeners to the buttons
+  d3.select('#button2').on('click', function() {
+    updateMap(2018);
+    console.log('onClick button2 event');
+  });
 
+  // Add event listeners to the buttons
+  d3.select('#button3').on('click', function() {
+    updateMap(2019);
+    console.log('onClick button3 event');
+  });
+>>>>>>> 09825fce7179c32c7bf39077b50d875074cd5621
+
+  // Add event listeners to the buttons
+  d3.select('#button4').on('click', function() {
+    updateMap(2020);
+    console.log('onClick button4 event');
+  });
+
+  // Add event listeners to the buttons
+  d3.select('#button5').on('click', function() {
+    updateMap(2021);
+    console.log('onClick button5 event');
+  });
+
+  // Add event listeners to the buttons
+  d3.select('#button6').on('click', function() {
+    updateMap(2022);
+    console.log('onClick button6 event');
+  });
+
+  function updateMap(year) {
+
+    d3.select("#chart1 svg").remove();
+
+    // Remove the background color from all buttons
+    d3.selectAll("#buttons button").style("background-color", "#8DB9B8");
+
+    // Add the background color to the selected button
+    d3.select(`#button${year - 2016}`).style("background-color", "#426B69");
+
+
+    // Load JSON files
+    d3.json('json/som-merged-topo.json').then(function(adm1) {
+      d3.json('json/som_adm1.json').then(function(somArgs) {
+        // Load data file
+        d3.csv('data/acute_food_insecurity.csv').then(function(csvData) {
+
+          // Parse the CSV data
+          csvData.forEach(function(d) {
+            d.year = +d.year;
+            d.percentage = +d.percentage;
+            d.population = +d.population;
+          });
+
+          // Filter the data based on default year - 2022
+          var filteredData = csvData.filter(function(d) {
+            return d.year === year;
+          });
+
+          // Create the color scale based on the percentage values
+          var colorScale = d3.scaleLinear()
+            .domain([20, 40, 60, 80, 100])
+            .range(['#C4FACA', '#F7EB17', '#FBA918', '#ED1E23', '#93191A']);
+
+          // Generate the map
+          var projection = d3.geoMercator()
+            .center([47, 5])
+            .scale(2300)
+            .translate([width / 2, height / 2]);
+
+          var path = d3.geoPath().projection(projection);
+
+          var svg1 = d3.select('#chart1')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+          var map = svg1.append('g').attr('id', 'adm1layer');
+
+          map.selectAll('path')
+            .data(adm1.features)
+            .enter()
+            .append('path')
+            .attr('d', path)
+            .attr('id', function(d) {
+              return d.properties.admin1Name;
+            })
+            .attr('class', function(d) {
+              return (d.properties.admin1Name !== '0') ? 'adm1' : 'inactive';
+            })
+            .attr('fill', function(d) {
+              return (d.properties.admin1Name !== '0') ? fillColor : inactiveFillColor;
+            })
+            .each(function(d) {
+              if (d.properties.admin1Name !== '0') {
+                d3.select(this)
+                  .attr('stroke-width', 2)
+                  .attr('stroke', '#FFFFFF');
+              }
+            })
+            .on('mouseover', handleMouseOver)
+            .on('mouseleave', handleMouseLeave)
+            .on('mousemove', handleMouseMove);
+
+          // Function to handle mouseover event on map paths
+          function handleMouseOver(d) {
+            Tooltip.style("opacity", 1);
+            d3.select(this)
+              .style("stroke", function(d) {
+                return d.properties.admin1Name === '0' ? "white" : "red"})
+              .style('stroke-width', 2)
+              .style("opacity", 1)
+              .transition()
+              .duration(500);
+            console.log('Mouseover event');
+          }
+
+          // Function to handle mouseleave event on map paths
+          function handleMouseLeave(d) {
+            Tooltip.style("opacity", 0);
+            d3.select(this)
+              .style("stroke", "#FFFFFF")
+              .style("opacity", 1);
+            console.log('Mouseleave event');
+          }
+
+          // Function to handle mousemove event on map paths
+          function handleMouseMove(event, d) {
+            var d = d; // Access the feature data
+
+            // Check if admin1Name is not '0' before showing the tooltip
+            if (d.properties.admin1Name !== '0') {
+              var regionData = filteredData.find(function(data) {
+                return data.region === d.properties.admin1Name;
+              });
+
+              // Update the tooltip position and content
+              Tooltip
+                .style("left", (d3.pointer(event)[0] + 300) + "px")
+                .style("top", (d3.pointer(event)[1] + 20) + "px")
+                .html("Region: " + d.properties.admin1Name + "<br>Population: " +
+                regionData.population + "<br>Percentage: " + regionData.percentage + "%");
+
+              Tooltip.style("opacity", 1); // Show the tooltip
+            } else {
+              Tooltip.style("opacity", 0); // Hide the tooltip
+            }
+            console.log('Mousemove event');
+          }
+
+          // Update the fill color of the regions based on the percentage values
+          svg1.selectAll('.adm1')
+            .attr('fill', function(d) {
+              var regionData = filteredData.find(function(data) {
+                return data.region === d.properties.admin1Name;
+              });
+              if (regionData) {
+                var percentage = regionData.percentage;
+                return percentage <= 100 && percentage > 80 ? '#93191A'
+                  : percentage <= 80 && percentage > 60 ? '#ED1E23'
+                  : percentage <= 60 && percentage > 40 ? '#FBA918'
+                  : percentage <= 40 && percentage > 20 ? '#F7EB17'
+                  : percentage <= 20 ? '#C4FACA'
+                  : fillColor;
+              } else {
+                return fillColor;
+              }
+            });
+
+          // Add the legend
+          var legend = svg1.append("g")
+            .attr("transform", "translate(" + (width - 200) + "," + (height - 200) + ")"); // Update the transform attribute
+
+          // Add one dot in the legend for each name.
+          var allgroups = ["Minimal (IPC Phase 1)", "Stressed (IPC Phase 2)", "Crisis (IPC Phase 3)", "Emergency (IPC Phase 4)", "Famine (IPC Phase 5)"];
+
+          legend.selectAll()
+            .data(allgroups)
+            .enter()
+            .append("text")
+              .attr('x', 30)  // Move labels to the right of the rectangles
+              .attr('y', function(d,i){ return 30 * i + 12;}) // Align labels with the center of the rectangles
+              .style("fill", function(d){ return colorScale(d);})
+              .text(function(d){ return d;})
+              .attr("text-anchor", "left")
+              .style("alignment-baseline", "middle")
+              .style("font-size", 14);
+
+          // Add one dot in the legend for each name.
+          var legendDots = legend.selectAll()
+            .data(colorScale.range())
+            .enter()
+            .append("rect")
+              .attr('x', 0)
+              .attr('y', function(d, i){ return 30 * i; })  // Stacking rectangles vertically
+              .attr('width', 20)
+              .attr('height', 20)
+              .style("fill", function(d){ return d; })
+
+<<<<<<< HEAD
     // Update the fill color of the regions based on the percentage values
     svg1.selectAll('.adm1')
       .attr('fill', function (d) {
         var regionData = filteredData.find(function (data) {
           return data.region === d.properties.admin1Name;
+=======
+>>>>>>> 09825fce7179c32c7bf39077b50d875074cd5621
         });
-        return regionData ? colorScale(regionData.percentage) : fillColor;
       });
+    });
   }
-
 
   //Visualization 1 END
 
   //Visualization 2 START
 
+<<<<<<< HEAD
   // set the dimensions and margins of the graph
   margin = { top: 80, right: 135, bottom: 80, left: 150 }
 
+=======
+>>>>>>> 09825fce7179c32c7bf39077b50d875074cd5621
   // append the svg object to the body of the page
   svg2 = d3.select("#chart2")
     .append("svg")
@@ -202,8 +398,6 @@ function init() {
 
   // Parse the Data
   d3.csv("data/rural_urban_areas_total.csv").then(function (data) {
-
-    //GENERAL//
 
     const areas = data.columns.slice(1)
 
