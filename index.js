@@ -74,6 +74,12 @@ function init() {
 
     d3.select("#chart1 svg").remove();
 
+    // Remove the background color from all buttons
+    d3.selectAll("#buttons button").style("background-color", "#8DB9B8");
+
+    // Add the background color to the selected button
+    d3.select(`#button${year - 2016}`).style("background-color", "#426B69");
+
 
     // Load JSON files
     d3.json('json/som-merged-topo.json').then(function(adm1) {
