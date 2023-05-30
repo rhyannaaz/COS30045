@@ -124,7 +124,7 @@ body {
 }
 
 #container3 {
-	padding: 40px 80px;
+	padding: 70px 0px;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 20px;
@@ -146,7 +146,6 @@ body {
 }
 
 #chart3 {
-	text-align: left;
 	scale: 0.8;
 }
 
@@ -196,8 +195,8 @@ button:hover {
 }
 
 .text3  {
-	/* margin: auto;
-	padding-right: 100px; */
+	margin: auto;
+	padding-right: 100px;
 	text-align: right;
 	text-align: justify;
 	font-size: 18px;

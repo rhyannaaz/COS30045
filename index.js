@@ -39,18 +39,18 @@ function init() {
       .enter()
       .append('path')
       .attr('d', d3.geoPath().projection(mapprojection))
-      .attr('id', function(d) {
+      .attr('id', function (d) {
         return d.properties.admin1Name;
       })
-      .attr('class', function(d) {
+      .attr('class', function (d) {
         var classname = (d.properties.admin1Name !== '0') ? 'adm1' : 'inactive';
         return classname;
       })
-      .attr('fill', function(d) {
+      .attr('fill', function (d) {
         var clr = (d.properties.admin1Name !== '0') ? fillColor : inactiveFillColor;
         return clr;
       })
-      .each(function(d) {
+      .each(function (d) {
         if (d.properties.admin1Name !== '0') {
           d3.select(this)
             .attr('stroke-width', 1)
@@ -139,7 +139,7 @@ function init() {
   var csvCall = d3.csv('data/acute_food_insecurity.csv');
 
   // Use Promise.all to handle asynchronous loading of data
-  Promise.all([adm1Call, somCall, countrieslabelCall, csvCall]).then(function(values) {
+  Promise.all([adm1Call, somCall, countrieslabelCall, csvCall]).then(function (values) {
     // Store data collected from loaded files
     var adm1Args = values[0];
     var somArgs = values[1];
@@ -159,13 +159,13 @@ function init() {
   // Function to display the chart based on CSV data
   function displayChart(csvData) {
     // Parse the CSV data
-    csvData.forEach(function(d) {
+    csvData.forEach(function (d) {
       d.year = +d.year;
       d.percentage = +d.percentage;
     });
 
     // Filter the data based on default year - 2022
-    var filteredData = csvData.filter(function(d) {
+    var filteredData = csvData.filter(function (d) {
       return d.year === 2022;
     });
 
@@ -176,8 +176,8 @@ function init() {
 
     // Update the fill color of the regions based on the percentage values
     svg1.selectAll('.adm1')
-      .attr('fill', function(d) {
-        var regionData = filteredData.find(function(data) {
+      .attr('fill', function (d) {
+        var regionData = filteredData.find(function (data) {
           return data.region === d.properties.admin1Name;
         });
         return regionData ? colorScale(regionData.percentage) : fillColor;
@@ -190,7 +190,7 @@ function init() {
   //Visualization 2 START
 
   // set the dimensions and margins of the graph
-  margin = {top: 80, right: 135, bottom: 80, left: 150}
+  margin = { top: 80, right: 135, bottom: 80, left: 150 }
 
   // append the svg object to the body of the page
   svg2 = d3.select("#chart2")
@@ -198,10 +198,10 @@ function init() {
     .attr("width", width + margin.left + margin.right + 100)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform",`translate(${margin.left}, ${margin.top})`);
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   // Parse the Data
-  d3.csv("data/rural_urban_areas_total.csv").then( function(data) {
+  d3.csv("data/rural_urban_areas_total.csv").then(function (data) {
 
     //GENERAL//
 
@@ -210,7 +210,7 @@ function init() {
     // color palette
     const color = d3.scaleOrdinal()
       .domain(areas)
-      .range(["#8338ec","#ff0054", "#0496FF"]);
+      .range(["#8338ec", "#ff0054", "#0496FF"]);
 
     //stack the data
     const stackedData = d3.stack()
@@ -220,19 +220,19 @@ function init() {
     // Add X axis
     const x = d3.scaleLinear()
       .domain([2015, 2023])
-      .range([ 0, width ]);
+      .range([0, width]);
     const xAxis = svg2.append("g")
       .attr("transform", `translate(0, ${height})`)
       .style('font-family', 'Arial')
       .style("font-size", 15)
       .call(d3.axisBottom(x).ticks(5)
-      .tickFormat(d3.format('d')));
+        .tickFormat(d3.format('d')));
 
     // Add X axis label:
     svg2.append("text")
       .attr("text-anchor", "middle")
-      .attr("x", width/2)
-      .attr("y", height+60 )
+      .attr("x", width / 2)
+      .attr("y", height + 60)
       .style('font-family', 'Arial')
       .style("font-size", 20)
       .text("Year");
@@ -240,7 +240,7 @@ function init() {
     // Add Y axis label:
     svg2.append("text")
       .attr('x', -240)
-      .attr("y", -100 )
+      .attr("y", -100)
       .attr('transform', 'rotate(270)')
       .text("Total Number of People Affected")
       .style('font-family', 'Arial')
@@ -250,7 +250,7 @@ function init() {
     // Add Y axis
     const y = d3.scaleLinear()
       .domain([0, 10000000])
-      .range([ height, 0 ]);
+      .range([height, 0]);
 
     svg2.append("g")
       .call(d3.axisLeft(y).ticks(10))
@@ -262,14 +262,14 @@ function init() {
     const clip = svg2.append("defs").append("svg:clipPath")
       .attr("id", "clip")
       .append("svg:rect")
-      .attr("width", width )
-      .attr("height", height )
+      .attr("width", width)
+      .attr("height", height)
       .attr("x", 0)
       .attr("y", 0);
 
     // Add brushing
     const brush = d3.brushX()
-      .extent( [ [0,0], [width,height] ] )
+      .extent([[0, 0], [width, height]])
       .on("end", updateAreaChart)
 
     const areaChart = svg2.append('g')
@@ -277,17 +277,17 @@ function init() {
 
     // Area generator
     const area = d3.area()
-      .x(function(d) { return x(Number(d.data.Year)); })
-      .y0(function(d) { return y(d[0]); })
-      .y1(function(d) { return y(d[1]); })
+      .x(function (d) { return x(Number(d.data.Year)); })
+      .y0(function (d) { return y(d[0]); })
+      .y1(function (d) { return y(d[1]); })
 
     // Show the areas
     areaChart
       .selectAll("mylayers")
       .data(stackedData)
       .join("path")
-      .attr("class", function(d) { return "myArea " + d.key })
-      .style("fill", function(d) { return color(d.key); })
+      .attr("class", function (d) { return "myArea " + d.key })
+      .style("fill", function (d) { return color(d.key); })
       .attr("d", area)
 
 
@@ -301,15 +301,15 @@ function init() {
     function idled() { idleTimeout = null; }
 
 
-    function updateAreaChart(event,d) {
+    function updateAreaChart(event, d) {
 
       extent = event.selection
 
-      if(!extent){
+      if (!extent) {
         if (!idleTimeout) return idleTimeout = setTimeout(idled, 350);
-        x.domain(d3.extent(data, function(d) { return Number(d.Year); }))
-      }else{
-        x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
+        x.domain(d3.extent(data, function (d) { return Number(d.Year); }))
+      } else {
+        x.domain([x.invert(extent[0]), x.invert(extent[1])])
         areaChart.select(".brush").call(brush.move, null)
       }
 
@@ -319,61 +319,65 @@ function init() {
         .selectAll("path")
         .transition().duration(1000)
         .attr("d", area)
-      }
+    }
 
-      // HIGHLIGHT GROUP //
+    // HIGHLIGHT GROUP //
 
-      // What to do when one group is hovered
-      const highlight = function(event,d){
-        // reduce opacity of all groups
-        d3.selectAll(".myArea").transition().duration(500).style("opacity", .1)
-        // except the one that is hovered
-        d3.select("."+d).transition().duration(500).style("opacity", 1)
-      }
+    // What to do when one group is hovered
+    const highlight = function (event, d) {
+      // reduce opacity of all groups
+      d3.selectAll(".myArea").transition().duration(500).style("opacity", .1)
+      // except the one that is hovered
+      d3.select("." + d).transition().duration(500).style("opacity", 1)
+    }
 
-      // And when it is not hovered anymore
-      const noHighlight = function(event,d){
-        d3.selectAll(".myArea").transition().duration(500).style("opacity", 1)
-      }
+    // And when it is not hovered anymore
+    const noHighlight = function (event, d) {
+      d3.selectAll(".myArea").transition().duration(500).style("opacity", 1)
+    }
 
-      // LEGEND //
+    // LEGEND //
 
-      // Add one dot in the legend for each name.
-      const size = 30
-      svg2.selectAll("myrect")
-        .data(areas)
-        .join("rect")
-        .attr("x", 700)
-        .attr("y", function(d,i){ return 10 + i*(size+5)})
-        .attr("width", size)
-        .attr("height", size)
-        .style("fill", function(d){ return color(d)})
-        .on("mouseover", highlight)
-        .on("mouseleave", noHighlight)
+    // Add one dot in the legend for each name.
+    const size = 30
+    svg2.selectAll("myrect")
+      .data(areas)
+      .join("rect")
+      .attr("x", 700)
+      .attr("y", function (d, i) { return 10 + i * (size + 5) })
+      .attr("width", size)
+      .attr("height", size)
+      .style("fill", function (d) { return color(d) })
+      .on("mouseover", highlight)
+      .on("mouseleave", noHighlight)
 
-      // Add one dot in the legend for each name.
-      svg2.selectAll("mylabels")
-        .data(areas)
-        .join("text")
-        .attr("x", 720 + size*1.2)
-        .attr("y", function(d,i){ return 10 + i*(size+5) + (size/2)})
-        .text(function(d){ return d})
-        .style('font-family', 'Arial')
-        .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle")
-        .on("mouseover", highlight)
-        .on("mouseleave", noHighlight)
+    // Add one dot in the legend for each name.
+    svg2.selectAll("mylabels")
+      .data(areas)
+      .join("text")
+      .attr("x", 720 + size * 1.2)
+      .attr("y", function (d, i) { return 10 + i * (size + 5) + (size / 2) })
+      .text(function (d) { return d })
+      .style('font-family', 'Arial')
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle")
+      .on("mouseover", highlight)
+      .on("mouseleave", noHighlight)
   })
 
   //Visualization 2 END
 
   //Visualization 3 START
 
+  var width3 = 900;
+  var height3 = 750;
+  var bar_padding3 = 8;
+
   var svg3 = d3.select("#chart3")
     .append("svg")
-    .attr("width", width + margin.left + margin.right )
-    .attr("height", height + margin.top + margin.bottom)
-    .attr("transform",`translate(${margin.left}, ${margin.top})`);
+    .attr("width", width3)
+    .attr("height", height3 + margin.top + margin.bottom)
+    .attr("transform", "translate(40,30})");
 
   d3.csv("data/consumer_price_food_indices_som.csv").then(function (data3) {
     var bar_number = data3.length
@@ -384,11 +388,11 @@ function init() {
 
     //add scale for visualization
     var xScale = d3.scaleBand()
-      .range([0, width])
+      .range([0, width3])
       .padding(bar_padding);
 
     var yScale = d3.scaleLinear()
-      .range([height, height * 2 / 3, 0])
+      .range([height3, height3 * 2 / 3, 0])
       .domain([d3.min(quarterlyChange), 0, d3.max(quarterlyChange)]);
     //
 
@@ -399,17 +403,15 @@ function init() {
     var yAxis = d3.axisLeft()
       .scale(yScale)
       .ticks(10)
-      .tickSizeInner(-width);
+      .tickSizeInner(-width3);
 
     svg3.append("g")
-      .attr("transform", "translate(0," + height * (2 / 3) + ")")
-      .call(xAxis)
-      .attr("marker-end","url(#arrow)");
+      .attr("transform", "translate(0," + height3 * (2 / 3) + ")")
+      .call(xAxis);
 
     svg3.append("g")
       .attr("class", "grid")
-      .call(yAxis)
-      .attr("marker-end","url(#arrow)");
+      .call(yAxis);
 
     svg3.selectAll(".grid line") //add grid line
       .style("stroke-width", "0.5px")
@@ -423,18 +425,18 @@ function init() {
       .append("rect")
       .attr("id", "bar-chart")
       .attr("x", function (d, i) {
-        return i * (width * (11/12) / bar_number) + 20;
+        return i * (width3 * (11 / 12) / bar_number) + 20;
       })
       .attr("y", function (d) {
         if (d.quarterlyChange >= 0) {
           return yScale(d.quarterlyChange);
         } else {
-          return height * (2 / 3);
+          return height3 * (2 / 3);
         }
       })
-      .attr('width', width  / bar_number - bar_padding)
+      .attr('width', width3 / bar_number - bar_padding)
       .attr('height', function (d) {
-        return Math.abs(height * 2 / 3 - yScale(d.quarterlyChange));
+        return Math.abs(height3 * 2 / 3 - yScale(d.quarterlyChange));
       })
       .attr("fill", "#FF6363")
       .on("mouseover", function (event, d, i) {
@@ -454,19 +456,19 @@ function init() {
 
         svg3.append('rect') //background for text when hovering
           .attr('id', 'tooltip-background')
-          .attr('x', xPosition + 5)
-          .attr('y', yPosition + 20)
-          .attr('width', 118)
-          .attr('height', 20)
+          .attr('x', xPosition )
+          .attr('y', yPosition + 14)
+          .attr('width', 155)
+          .attr('height', 30)
           .attr('fill', 'lightblue')
           .attr('opacity', 0.7)
           .attr('rx', 5)
           .attr('ry', 5);
 
         svg3.append('text')   //display text when hovering
-          .style("font", "14px sans-serif")
+          .style("font", "18px sans-serif")
           .attr('id', 'tooltip')
-          .attr('x', xPosition + 10)
+          .attr('x', xPosition + 5)
           .attr('y', yPosition + 35)
           .text(d.Date + ": " + d.quarterlyChange + "%")
           .attr('fill', 'black');
@@ -493,7 +495,7 @@ function init() {
       .enter()
       .append("circle")
       .attr("cx", function (d, i) {
-        return i * (width * (11 / 12) / bar_number) + 34;
+        return i * (width3 * (11 / 12) / bar_number) + 34;
       })
       .attr("cy", function (d) {
         return yScale(d.annualChange);
@@ -506,20 +508,20 @@ function init() {
 
         svg3.append('rect') //background for text when hovering
           .attr('id', 'tooltip-background')
-          .attr('x', xPosition - 68)
+          .attr('x', xPosition - 70)
           .attr('y', yPosition + 21)
-          .attr('width', 118)
-          .attr('height', 20)
+          .attr('width', 155)
+          .attr('height', 30)
           .attr('fill', 'lightblue')
           .attr('opacity', 0.7)
           .attr('rx', 5)
           .attr('ry', 5);
 
         svg3.append('text')   //display text when hovering
-          .style("font", "14px sans-serif")
+          .style("font", "18px sans-serif")
           .attr('id', 'tooltip')
           .attr('x', xPosition - 65)
-          .attr('y', yPosition + 35)
+          .attr('y', yPosition + 43)
           .text(d.Date + ": " + d.annualChange + "%")
           .attr('fill', 'black');
 
@@ -538,7 +540,7 @@ function init() {
 
 
     var lineGenerator = d3.line()
-      .x(function (d, i) { return i * (width * (11 / 12) / bar_number) + 34; })
+      .x(function (d, i) { return i * (width3 * (11 / 12) / bar_number) + 34; })
       .y(function (d) { return yScale(d.annualChange); })
       .curve(d3.curveLinear);
 
@@ -560,9 +562,42 @@ function init() {
           .style("opacity", 1);
       });
 
+    //legends of vis 3
+    var legendSvg = d3.select("#chart3")
+      .append("svg")
+      .attr("width", width3)
+      .attr("height", 50);
+
+    var barLegend = legendSvg.append("g")
+      .attr("transform", "translate(20, 20)");
+
+    barLegend.append("rect")
+      .attr("x", 290)
+      .attr("y", 0)
+      .attr("width", 40)
+      .attr("height", 25)
+      .attr("fill", "#FF6363");
+
+    barLegend.append("text")
+      .attr("x", 340)
+      .attr("y", 24)
+      .text("Quarterly change")
+      .style("font-size", "24px");
+    var lineLegend = legendSvg.append("g")
+      .attr("transform", "translate(200, 34)");
+
+    lineLegend.append("circle")
+      .attr("cx", 400)
+      .attr("cy", 0)
+      .attr("r", 10)
+      .attr("fill", "#1B9C85");
+
+    lineLegend.append("text")
+      .attr("x", 420)
+      .attr("y", 10)
+      .text("Annual change")
+      .style("font-size", "24px");
   })
-
-
 
   //Visualization 3 END
 }
