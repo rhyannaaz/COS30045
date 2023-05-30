@@ -124,7 +124,7 @@ body {
 }
 
 #container3 {
-	padding: 70px 0px;
+	padding: 70px 80px;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 20px;
@@ -145,6 +145,7 @@ body {
 }
 
 #chart3 {
+	/* text-align: left; */
 	scale: 0.8;
 }
 
