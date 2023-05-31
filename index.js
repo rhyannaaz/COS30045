@@ -254,7 +254,7 @@ function init() {
     .attr("width", width + margin.left + margin.right + 100)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform",`translate(${margin.left}, ${margin.top})`);
+    .attr("transform",`translate(${margin.left +100}, ${margin.top})`);
 
   // Parse the Data
   d3.csv("data/rural_urban_areas_total.csv").then( function(data) {

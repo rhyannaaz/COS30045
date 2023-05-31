@@ -9,20 +9,20 @@
 }
 
 header {
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  align-content: flex-start;
-  height:50vw;
-  min-height:350px;
-  max-height:350px;
-  min-width:300px;
-  color:#F7F9FD;
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	align-content: flex-start;
+	height: 50vw;
+	min-height: 350px;
+	max-height: 350px;
+	min-width: 300px;
+	color: #F7F9FD;
 	font-size: 20px;
-	text-align:center;
+	text-align: center;
 	padding-top: 90px;
 	padding-bottom: 90px;
 	margin-left: -50px;
@@ -32,38 +32,44 @@ header {
 }
 
 header:after {
-  content:"";
-  width:100%;
-  height:100%;
-  position:absolute;
-  bottom:0;
-  left:0;
-  z-index:-1;
- 	background: linear-gradient(to bottom, rgba(0,0,0,0.12) 40%,rgba(27,32,48,1) 100%);
+	content: "";
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+	background: linear-gradient(to bottom, rgba(0, 0, 0, 0.12) 40%, rgba(27, 32, 48, 1) 100%);
 }
 
 header:before {
-  content:"";
-  width:100%;
-  height:200%;
-  position:absolute;
-  top:0;
-  left:0;
-  -webkit-backface-visibility: hidden;
-  -webkit-transform: translateZ(0); backface-visibility: hidden;
-  scale: (1.0, 1.0);
-  transform: translateZ(0);
-  background:#1B2030 url(images/somalia_illustration.png) 50% 0 no-repeat;
-  background-size:100%;
-  background-attachment:fixed;
-  animation: grow 360s  linear 10ms infinite;
-  transition:all 0.4s ease-in-out;
-  z-index:-2
+	content: "";
+	width: 100%;
+	height: 200%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	-webkit-backface-visibility: hidden;
+	-webkit-transform: translateZ(0);
+	backface-visibility: hidden;
+	scale: (1.0, 1.0);
+	transform: translateZ(0);
+	background: #1B2030 url(images/somalia_illustration.png) 50% 0 no-repeat;
+	background-size: 100%;
+	background-attachment: fixed;
+	animation: grow 360s linear 10ms infinite;
+	transition: all 0.4s ease-in-out;
+	z-index: -2
 }
 
 @keyframes grow {
-  0% { transform: scale(1) translateY(0px)}
-  50% { transform: scale(1.2) translateY(-400px)}
+	0% {
+		transform: scale(1) translateY(0px)
+	}
+
+	50% {
+		transform: scale(1.2) translateY(-400px)
+	}
 }
 
 h1 {
@@ -74,20 +80,20 @@ h1:after {
 	content: '';
 	position: absolute;
 	display: inline-block;
-  height: 1em;
-  width: 58%;
-  border-bottom: 1px solid;
-  margin-top: 1%;
+	height: 1em;
+	width: 58%;
+	border-bottom: 1px solid;
+	margin-top: 1%;
 	left: 21%;
-  opacity: 0;
+	opacity: 0;
 	animation: underlineEffect 4s forwards;
-	transform: scale(0,1);
+	transform: scale(0, 1);
 }
 
 @keyframes underlineEffect {
 	0% {
 		opacity: 0;
-		transform: scale(0,1);
+		transform: scale(0, 1);
 	}
 
 	100% {
@@ -97,7 +103,7 @@ h1:after {
 }
 
 body {
-  background-color: #FFFFFF;
+	background-color: #FFFFFF;
 	overflow-x: hidden;
 }
 
@@ -113,14 +119,19 @@ body {
 	background-color: #fff;
 }
 
-#container0, #container1, #container4 {
+#container0,
+#container1,
+#container4 {
 	padding: 40px 80px;
 	text-align: justify;
 }
 
 #container2 {
-	padding: 40px 80px;
-	text-align: justify;
+	padding: 70px 80px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 0px;
+	text-align: center;
 }
 
 #container3 {
@@ -155,14 +166,14 @@ h2 {
 
 .map-tooltip {
 	position: absolute;
-  pointer-events: none;
-  background-color: white;
-  border: solid 1px #ccc;
-  padding: 7px;
-  font-size: 14px;
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: 10;
+	pointer-events: none;
+	background-color: white;
+	border: solid 1px #ccc;
+	padding: 7px;
+	font-size: 14px;
+	opacity: 0;
+	transition: opacity 0.3s;
+	z-index: 10;
 }
 
 #buttons {
@@ -185,20 +196,25 @@ button {
 }
 
 button:hover {
-  opacity: 0.6;
+	opacity: 0.6;
 }
 
-.background, .text1, .text4 {
+.background,
+.text1 {
 	font-size: 18px;
+	margin: auto;
+	width: 1400px;
 }
 
-.text2  {
+.text2 {
 	text-align: left;
 	text-align: justify;
 	font-size: 18px;
+	margin: auto;
+	padding-left: 150px;
 }
 
-.text3  {
+.text3 {
 	margin: auto;
 	padding-right: 100px;
 	text-align: right;
