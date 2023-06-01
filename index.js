@@ -431,7 +431,7 @@ function init() {
     .append("svg")
     .attr("width", width3)
     .attr("height", height3 + margin.top + margin.bottom)
-    .attr("transform", "translate(90,30)");
+    .attr("transform", "translate(100,80)");
 
   d3.csv("data/consumer_price_food_indices_som.csv").then(function (data3) {
     var bar_number = data3.length
@@ -440,30 +440,49 @@ function init() {
       return Number(d.quarterlyChange);
     });
 
+    // Add X axis label:
+    svg3.append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", width3/2)
+      .attr("y", height3+50 )
+      .style('font-family', 'Arial')
+      .style("font-size", 20)
+      .text("Year");
+
+    // Add Y axis label:
+    svg3.append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", -400)
+      .attr("y", 20)
+      .style("font-family", "Arial")
+      .style("font-size", 20)
+      .text("CPI Value")
+      .attr("transform", "rotate(270)");
+
+
     //add scale for visualization
     var xScale = d3.scaleBand()
       .range([0, width3])
-      // .domain(data3.map(function(d) { return d.Date; }))
       .padding(bar_padding);
 
     var yScale = d3.scaleLinear()
       .range([height3, height3 * 2 / 3, 0])
-      .domain([-10, 0, 15]);
+      .domain([-8, 0, 15]);
 
     svg3.append("g")
-      .attr("transform", "translate(0," + height3 * (2 / 3) + ")")
+      .attr("transform", "translate(50," + height3 * (2 / 3) + ")")
       .call(d3.axisBottom(xScale).tickFormat(""));
 
     svg3.append("g")
-      .attr("transform", "translate(20,0)")
-      .call(d3.axisLeft().scale(yScale).tickValues(d3.range(-10, 21, 3)).ticks(10));
+      .attr("transform", "translate(50,0)")
+      .call(d3.axisLeft().scale(yScale).tickValues(d3.range(-8, 21, 2)).ticks(10));
 
     // Add y-axis grid lines
     svg3.append("g")
-      .attr("transform", "translate(20,0)")
+      .attr("transform", "translate(50,0)")
       .attr("class", "grid")
       .call(d3.axisLeft(yScale)
-        .tickValues(d3.range(-10, 21, 3))
+        .tickValues(d3.range(-8, 21, 2))
         .ticks(10)
         .tickSizeInner(-width3)
         .tickFormat("")
@@ -481,7 +500,7 @@ function init() {
       .append("rect")
       .attr("id", "bar-chart")
       .attr("x", function (d, i) {
-        return i * (width3 * (11 / 12) / bar_number) + 20;
+        return i * (width3 * (11 / 12) / bar_number) + 60;
       })
       .attr("y", function (d) {
         if (d.quarterlyChange >= 0) {
@@ -551,7 +570,7 @@ function init() {
       .enter()
       .append("circle")
       .attr("cx", function (d, i) {
-        return i * (width3 * (11 / 12) / bar_number) + 34;
+        return i * (width3 * (11 / 12) / bar_number) + 78;
       })
       .attr("cy", function (d) {
         return yScale(d.annualChange);
@@ -596,7 +615,7 @@ function init() {
 
 
     var lineGenerator = d3.line()
-      .x(function (d, i) { return i * (width3 * (11 / 12) / bar_number) + 34; })
+      .x(function (d, i) { return i * (width3 * (11 / 12) / bar_number) + 78; })
       .y(function (d) { return yScale(d.annualChange); })
       .curve(d3.curveLinear);
 
