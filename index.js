@@ -1,8 +1,10 @@
-/**
-* Authors: Hayden Tran (102882815), Rhyanna Arisya Zaharom (103698709)
-* Target: index.html
-* Created: 29th April 2023
-**/
+/*
+Authors: Hayden Tran (102882815), Rhyanna Arisya Zaharom (103698709)
+Target: index.html
+Created: 29th April 2023
+Semester 1 2023
+COS30045
+*/
 
 function init() {
 
