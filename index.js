@@ -12,7 +12,7 @@ function init() {
   var bar_padding = 5;
   margin = {top: 80, right: 135, bottom: 80, left: 150}
 
-  //Visualization 1 START
+  // Visualization 1 START
 
   // Create a tooltip
   var Tooltip = d3.select("#chart1")
@@ -28,50 +28,49 @@ function init() {
 
   var fillColor = '#dddddd';
   var inactiveFillColor = '#ffffff';
-  var csvData; // Declare csvData as a global variable
+  var csvData;
   var year = 2022;
   var svg1;
 
+  // Display choropleth map onload with default year (2022)
   updateMap(year);
 
   // Add event listeners to the buttons
+
   d3.select('#button1').on('click', function() {
     updateMap(2017);
     console.log('onClick button1 event');
   });
 
-  // Add event listeners to the buttons
   d3.select('#button2').on('click', function() {
     updateMap(2018);
     console.log('onClick button2 event');
   });
 
-  // Add event listeners to the buttons
   d3.select('#button3').on('click', function() {
     updateMap(2019);
     console.log('onClick button3 event');
   });
 
-  // Add event listeners to the buttons
   d3.select('#button4').on('click', function() {
     updateMap(2020);
     console.log('onClick button4 event');
   });
 
-  // Add event listeners to the buttons
   d3.select('#button5').on('click', function() {
     updateMap(2021);
     console.log('onClick button5 event');
   });
 
-  // Add event listeners to the buttons
   d3.select('#button6').on('click', function() {
     updateMap(2022);
     console.log('onClick button6 event');
   });
 
+  // Update map with selected year
   function updateMap(year) {
 
+    // Remove the previous choropleth map
     d3.select("#chart1 svg").remove();
 
     // Remove the background color from all buttons
@@ -79,7 +78,6 @@ function init() {
 
     // Add the background color to the selected button
     d3.select(`#button${year - 2016}`).style("background-color", "#426B69");
-
 
     // Load JSON files
     d3.json('json/som-merged-topo.json').then(function(adm1) {
@@ -209,26 +207,28 @@ function init() {
               }
             });
 
+          // LEGEND //
+
           // Add the legend
           var legend = svg1.append("g")
             .attr("transform", "translate(" + (width - 200) + "," + (height - 200) + ")"); // Update the transform attribute
 
-          // Add one dot in the legend for each name.
+          // Array to display for legend
           var allgroups = ["Minimal (IPC Phase 1)", "Stressed (IPC Phase 2)", "Crisis (IPC Phase 3)", "Emergency (IPC Phase 4)", "Famine (IPC Phase 5)"];
 
           legend.selectAll()
             .data(allgroups)
             .enter()
             .append("text")
-              .attr('x', 30)  // Move labels to the right of the rectangles
-              .attr('y', function(d,i){ return 30 * i + 12;}) // Align labels with the center of the rectangles
+              .attr('x', 30)
+              .attr('y', function(d,i){ return 30 * i + 12;})
               .style("fill", function(d){ return colorScale(d);})
               .text(function(d){ return d;})
               .attr("text-anchor", "left")
               .style("alignment-baseline", "middle")
               .style("font-size", 14);
 
-          // Add one dot in the legend for each name.
+          // Add one square in the legend for each name.
           var legendDots = legend.selectAll()
             .data(colorScale.range())
             .enter()
@@ -237,18 +237,18 @@ function init() {
               .attr('y', function(d, i){ return 30 * i; })  // Stacking rectangles vertically
               .attr('width', 20)
               .attr('height', 20)
-              .style("fill", function(d){ return d; })
+              .style("fill", function(d){ return d; });
 
         });
       });
     });
   }
 
-  //Visualization 1 END
+  // Visualization 1 END
 
-  //Visualization 2 START
+  // Visualization 2 START
 
-  // append the svg object to the body of the page
+  // Append the svg object to the body of the page
   svg2 = d3.select("#chart2")
     .append("svg")
     .attr("width", width + margin.left + margin.right + 100)
@@ -259,17 +259,18 @@ function init() {
   // Parse the Data
   d3.csv("data/rural_urban_areas_total.csv").then( function(data) {
 
-    const areas = data.columns.slice(1)
+    // Exlude first column
+    const areas = data.columns.slice(1);
 
-    // color palette
+    // Color palette
     const color = d3.scaleOrdinal()
       .domain(areas)
       .range(["#8338ec","#ff0054", "#0496FF"]);
 
-    //stack the data
+    // Stack the data
     const stackedData = d3.stack()
       .keys(areas)
-      (data)
+      (data);
 
     // Add X axis
     const x = d3.scaleLinear()
@@ -282,7 +283,7 @@ function init() {
       .call(d3.axisBottom(x).ticks(5)
       .tickFormat(d3.format('d')));
 
-    // Add X axis label:
+    // Add X axis label
     svg2.append("text")
       .attr("text-anchor", "middle")
       .attr("x", width/2)
@@ -291,7 +292,7 @@ function init() {
       .style("font-size", 20)
       .text("Year");
 
-    // Add Y axis label:
+    // Add Y axis label
     svg2.append("text")
       .attr('x', -240)
       .attr("y", -100 )
@@ -309,10 +310,11 @@ function init() {
     svg2.append("g")
       .call(d3.axisLeft(y).ticks(10))
       .style('font-family', 'Arial')
-      .style("font-size", 15)
+      .style("font-size", 15);
 
     // BRUSHING AND CHART //
 
+    // Create a clip path element within the SVG element
     const clip = svg2.append("defs").append("svg:clipPath")
       .attr("id", "clip")
       .append("svg:rect")
@@ -324,16 +326,16 @@ function init() {
     // Add brushing
     const brush = d3.brushX()
       .extent( [ [0,0], [width,height] ] )
-      .on("end", updateAreaChart)
+      .on("end", updateAreaChart);
 
     const areaChart = svg2.append('g')
-      .attr("clip-path", "url(#clip)")
+      .attr("clip-path", "url(#clip)");
 
     // Area generator
     const area = d3.area()
       .x(function(d) { return x(Number(d.data.Year)); })
       .y0(function(d) { return y(d[0]); })
-      .y1(function(d) { return y(d[1]); })
+      .y1(function(d) { return y(d[1]); });
 
     // Show the areas
     areaChart
@@ -342,8 +344,7 @@ function init() {
       .join("path")
       .attr("class", function(d) { return "myArea " + d.key })
       .style("fill", function(d) { return color(d.key); })
-      .attr("d", area)
-
+      .attr("d", area);
 
     // Add the brushing
     areaChart
@@ -359,40 +360,54 @@ function init() {
 
       extent = event.selection
 
-      if(!extent){
+      if (!extent) {
         if (!idleTimeout) return idleTimeout = setTimeout(idled, 350);
         x.domain(d3.extent(data, function(d) { return Number(d.Year); }))
-      }else{
+      } else {
         x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
         areaChart.select(".brush").call(brush.move, null)
       }
 
       // Update axis and area position
-      xAxis.transition().duration(1000).call(d3.axisBottom(x).ticks(5).tickFormat(d3.format('d')))
+      xAxis
+        .transition()
+        .duration(1000)
+        .call(d3.axisBottom(x)
+        .ticks(5)
+        .tickFormat(d3.format('d')));
       areaChart
         .selectAll("path")
         .transition().duration(1000)
-        .attr("d", area)
+        .attr("d", area);
       }
 
       // HIGHLIGHT GROUP //
 
-      // What to do when one group is hovered
+      // When one group is hovered
       const highlight = function(event,d){
-        // reduce opacity of all groups
-        d3.selectAll(".myArea").transition().duration(500).style("opacity", .1)
-        // except the one that is hovered
-        d3.select("."+d).transition().duration(500).style("opacity", 1)
+        // Reduce opacity of all groups
+        d3.selectAll(".myArea")
+          .transition()
+          .duration(500)
+          .style("opacity", .1);
+        // Except the one that is hovered
+        d3.select("."+d)
+          .transition()
+          .duration(500)
+          .style("opacity", 1);
       }
 
-      // And when it is not hovered anymore
+      // When group is not hovered anymore
       const noHighlight = function(event,d){
-        d3.selectAll(".myArea").transition().duration(500).style("opacity", 1)
+        d3.selectAll(".myArea")
+          .transition()
+          .duration(500)
+          .style("opacity", 1);
       }
 
       // LEGEND //
 
-      // Add one dot in the legend for each name.
+      // Add one square in the legend for each name
       const size = 30
       svg2.selectAll("myrect")
         .data(areas)
@@ -403,9 +418,9 @@ function init() {
         .attr("height", size)
         .style("fill", function(d){ return color(d)})
         .on("mouseover", highlight)
-        .on("mouseleave", noHighlight)
+        .on("mouseleave", noHighlight);
 
-      // Add one dot in the legend for each name.
+      // Add one square in the legend for each name
       svg2.selectAll("mylabels")
         .data(areas)
         .join("text")
@@ -416,16 +431,15 @@ function init() {
         .attr("text-anchor", "left")
         .style("alignment-baseline", "middle")
         .on("mouseover", highlight)
-        .on("mouseleave", noHighlight)
+        .on("mouseleave", noHighlight);
   })
 
-  //Visualization 2 END
+  // Visualization 2 END
 
-  //Visualization 3 START
+  // Visualization 3 START
 
   var width3 = 900;
   var height3 = 750;
-  var bar_padding3 = 8;
 
   var svg3 = d3.select("#chart3")
     .append("svg")
@@ -440,7 +454,7 @@ function init() {
       return Number(d.quarterlyChange);
     });
 
-    // Add X axis label:
+    // Add X axis label
     svg3.append("text")
       .attr("text-anchor", "middle")
       .attr("x", width3/2)
@@ -449,7 +463,7 @@ function init() {
       .style("font-size", 20)
       .text("Quarterly Months");
 
-    // Add Y axis label:
+    // Add Y axis label
     svg3.append("text")
       .attr("text-anchor", "middle")
       .attr("x", -400)
@@ -460,7 +474,7 @@ function init() {
       .attr("transform", "rotate(270)");
 
 
-    //add scale for visualization
+    // Add scale for visualization
     var xScale = d3.scaleBand()
       .range([0, width3])
       .padding(bar_padding);
@@ -493,7 +507,7 @@ function init() {
       .style("stroke-width", "0.5px")
       .style("stroke", "#cccccc");
 
-    //add bars
+    // Add bars
     svg3.selectAll("rect")
       .data(data3)
       .enter()
@@ -515,7 +529,7 @@ function init() {
       })
       .attr("fill", "#FF6363")
       .on("mouseover", function (event, d, i) {
-        //hover effect to blur out line chart
+        // Hover effect to blur out line chart
         d3.selectAll("path")
           .style("opacity", 0.2);
         d3.selectAll("circle")
@@ -524,12 +538,12 @@ function init() {
           .style("opacity", 1);
         d3.select(this)
           .attr("fill", "#ff6666")
-        //
 
         var xPosition = parseFloat(d3.select(this).attr('x'))
         var yPosition = parseFloat(d3.select(this).attr('y'))
 
-        svg3.append('rect') //background for text when hovering
+        // Background for text when hovering
+        svg3.append('rect')
           .attr('id', 'tooltip-background')
           .attr('x', xPosition )
           .attr('y', yPosition + 14)
@@ -540,7 +554,8 @@ function init() {
           .attr('rx', 5)
           .attr('ry', 5);
 
-        svg3.append('text')   //display text when hovering
+        // Display text when hovering
+        svg3.append('text')
           .style("font", "18px sans-serif")
           .attr('id', 'tooltip')
           .attr('x', xPosition + 5)
@@ -558,13 +573,14 @@ function init() {
         d3.select(this)
           .attr("fill", "#FF6363");
 
-        d3.select('#tooltip').remove() //remove tool tip
-        d3.select('#tooltip-background').remove(); // remove background
+        // Remove tool tip
+        d3.select('#tooltip').remove()
+        // Remove background
+        d3.select('#tooltip-background').remove();
 
       })
-    //
 
-    //scatter plot
+    // Scatter plot
     svg3.selectAll("circle")
       .data(data3)
       .enter()
@@ -577,11 +593,13 @@ function init() {
       })
       .attr("r", 8)
       .attr("fill", "#1B9C85")
-      .on('mouseover', function (event, d) {  //creat hover effect for scatter plot
+      // Creat hover effect for scatter plot
+      .on('mouseover', function (event, d) {
         var xPosition = parseFloat(d3.select(this).attr('cx'))
         var yPosition = parseFloat(d3.select(this).attr('cy'))
 
-        svg3.append('rect') //background for text when hovering
+        // Background for text when hovering
+        svg3.append('rect')
           .attr('id', 'tooltip-background')
           .attr('x', xPosition - 70)
           .attr('y', yPosition + 21)
@@ -592,7 +610,8 @@ function init() {
           .attr('rx', 5)
           .attr('ry', 5);
 
-        svg3.append('text')   //display text when hovering
+        // Display text when hovering
+        svg3.append('text')
           .style("font", "18px sans-serif")
           .attr('id', 'tooltip')
           .attr('x', xPosition - 65)
@@ -600,16 +619,19 @@ function init() {
           .text(d.Date + ": " + d.annualChange + "%")
           .attr('fill', 'black');
 
-        d3.selectAll("#bar-chart")  //blur out the bar chart when hovering
+        // Blur out the bar chart when hovering
+        d3.selectAll("#bar-chart")
           .style("opacity", 0.2);
         d3.select("path")
           .style("filter", "none");
       })
       .on('mouseout', function () {
-        d3.select('#tooltip').remove() //remove tool tip
-        d3.select('#tooltip-background').remove(); // remove background
-
-        d3.selectAll("rect")  //make the bar chart normal when not hovering the scatter plot
+         // Remove tool tip
+        d3.select('#tooltip').remove()
+        // Remove background
+        d3.select('#tooltip-background').remove();
+        // Make the bar chart normal when not hovering the scatter plot
+        d3.selectAll("rect")
           .style("opacity", 1);
       })
 
@@ -626,7 +648,8 @@ function init() {
       .attr("stroke", "#FFE194")
       .attr("stroke-width", 5)
       .attr("d", lineGenerator)
-      .on("mouseover", function () { // hover efect to blur out bar chart
+      // hHver efect to blur out bar chart
+      .on("mouseover", function () {
         d3.selectAll("rect")
           .style("opacity", 0.2);
         d3.select("path")
@@ -637,7 +660,7 @@ function init() {
           .style("opacity", 1);
       });
 
-    //legends of vis 3
+    // LEGEND //
     var legendSvg = d3.select("#chart3")
       .append("svg")
       .attr("width", width3)
@@ -658,6 +681,7 @@ function init() {
       .attr("y", 24)
       .text("Quarterly change")
       .style("font-size", "24px");
+
     var lineLegend = legendSvg.append("g")
       .attr("transform", "translate(200, 34)");
 
