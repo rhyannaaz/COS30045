@@ -138,7 +138,7 @@ body {
 	padding: 70px 80px;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	grid-gap: 20px;
+	grid-gap: 150px;
 	text-align: center;
 }
 
@@ -152,12 +152,10 @@ body {
 
 #chart2 {
 	text-align: right;
-	scale: 0.8;
 }
 
 #chart3 {
-	/* text-align: left; */
-	scale: 0.8;
+	text-align: right;
 }
 
 h2 {
@@ -202,8 +200,8 @@ button:hover {
 .background,
 .text1 {
 	font-size: 18px;
-	margin: auto;
-	width: 1400px;
+	padding-left: 100px;
+	padding-right: 100px;
 }
 
 .text2 {
