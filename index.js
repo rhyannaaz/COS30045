@@ -431,7 +431,7 @@ function init() {
     .append("svg")
     .attr("width", width3)
     .attr("height", height3 + margin.top + margin.bottom)
-    .attr("transform", "translate(40,30})");
+    .attr("transform", "translate(90,30)");
 
   d3.csv("data/consumer_price_food_indices_som.csv").then(function (data3) {
     var bar_number = data3.length
@@ -443,34 +443,36 @@ function init() {
     //add scale for visualization
     var xScale = d3.scaleBand()
       .range([0, width3])
+      // .domain(data3.map(function(d) { return d.Date; }))
       .padding(bar_padding);
 
     var yScale = d3.scaleLinear()
       .range([height3, height3 * 2 / 3, 0])
-      .domain([d3.min(quarterlyChange), 0, d3.max(quarterlyChange)]);
-    //
-
-    //add axis
-    var xAxis = d3.axisBottom()
-      .scale(xScale);
-
-    var yAxis = d3.axisLeft()
-      .scale(yScale)
-      .ticks(10)
-      .tickSizeInner(-width3);
+      .domain([-10, 0, 15]);
 
     svg3.append("g")
       .attr("transform", "translate(0," + height3 * (2 / 3) + ")")
-      .call(xAxis);
+      .call(d3.axisBottom(xScale).tickFormat(""));
 
     svg3.append("g")
-      .attr("class", "grid")
-      .call(yAxis);
+      .attr("transform", "translate(20,0)")
+      .call(d3.axisLeft().scale(yScale).tickValues(d3.range(-10, 21, 3)).ticks(10));
 
-    svg3.selectAll(".grid line") //add grid line
+    // Add y-axis grid lines
+    svg3.append("g")
+      .attr("transform", "translate(20,0)")
+      .attr("class", "grid")
+      .call(d3.axisLeft(yScale)
+        .tickValues(d3.range(-10, 21, 3))
+        .ticks(10)
+        .tickSizeInner(-width3)
+        .tickFormat("")
+      );
+
+    // Style the grid lines
+    svg3.selectAll(".grid line")
       .style("stroke-width", "0.5px")
       .style("stroke", "#cccccc");
-    //
 
     //add bars
     svg3.selectAll("rect")
