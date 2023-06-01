@@ -447,7 +447,7 @@ function init() {
       .attr("y", height3+50 )
       .style('font-family', 'Arial')
       .style("font-size", 20)
-      .text("Year");
+      .text("Quarterly Months");
 
     // Add Y axis label:
     svg3.append("text")
